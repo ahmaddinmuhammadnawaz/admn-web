@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
-import { Mail, Lock } from 'lucide-react'
+import { Mail } from 'lucide-react'
+import PasswordInput from './PasswordInput'
 
 export default async function Login({
   searchParams,
@@ -61,19 +62,11 @@ export default async function Login({
               />
             </div>
           </div>
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
-            <div className="relative">
-              <Lock size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
-              <input
-                id="password"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:border-[#131924] focus:ring-1 focus:ring-[#131924] bg-white text-black"
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            {/* Add the name="password" prop here */}
+            <PasswordInput name="password" />
           </div>
 
           <button className="w-full bg-[#131924] text-white font-bold py-3.5 rounded-xl mt-2 hover:bg-gray-800 active:scale-[0.99] transition-all">
