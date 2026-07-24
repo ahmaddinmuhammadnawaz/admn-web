@@ -2,6 +2,8 @@ import { changePassword } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft, KeyRound } from 'lucide-react'
 import PasswordInput from '@/app/login/PasswordInput'
+import SettingsForm from './SettingsForm' 
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default async function SettingsPage({
   searchParams,
@@ -36,7 +38,8 @@ export default async function SettingsPage({
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Change Password</h2>
           </div>
 
-          <form action={changePassword} className="flex flex-col gap-5">
+          {/* Using the imported SettingsForm here */}
+          <SettingsForm action={changePassword}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Old Password</label>
               <PasswordInput name="oldPassword" />
@@ -53,10 +56,8 @@ export default async function SettingsPage({
             {error && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-sm font-medium border border-red-100">{error}</div>}
             {success && <div className="p-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium border border-green-100">{success}</div>}
 
-            <button type="submit" className="w-full bg-[#131924] text-white font-bold py-3.5 rounded-xl mt-2 hover:bg-gray-800 active:scale-[0.99] transition-all">
-              Update Password
-            </button>
-          </form>
+            <SubmitButton>Update Password</SubmitButton>
+          </SettingsForm>
         </div>
       </div>
     </main>

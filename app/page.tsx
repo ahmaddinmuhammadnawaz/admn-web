@@ -3,7 +3,8 @@ import Link from 'next/link'
 import DashboardClient from './DashboardClient'
 import { signOut } from './actions'
 import Image from 'next/image'
-import { Settings, LogOut, Plus } from 'lucide-react'
+import { Settings, Plus } from 'lucide-react'
+import { LogoutButton } from '@/components/LogoutButton'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -29,8 +30,8 @@ export default async function Home() {
   const balanceLabel = netBalance === 0
     ? 'Settled'
     : netBalance > 0
-      ? `Rs ${netBalance.toFixed(0)}`
-      : `Rs ${Math.abs(netBalance).toFixed(0)}`
+      ? `${netBalance.toFixed(0)}`
+      : `${Math.abs(netBalance).toFixed(0)}`
 
   return (
     <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
@@ -56,9 +57,7 @@ export default async function Home() {
             </Link>
 
             <form action={signOut}>
-              <button type="submit" className="text-white/90 hover:text-white transition-colors" title="Sign out">
-                <LogOut size={21} strokeWidth={2} />
-              </button>
+              <LogoutButton />
             </form>
           </div>
         </div>
@@ -81,7 +80,21 @@ export default async function Home() {
           
           {/* Outstanding Block - Takes all remaining space */}
           <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm flex-1 min-w-0 text-center">
-            <p className="text-base sm:text-lg font-bold text-gray-900 truncate tnum">{balanceLabel}</p>
+            <p className={`text-base sm:text-lg font-bold truncate tnum ${
+              netBalance > 0 
+                ? 'text-[#DC2626]' // Red for Debit
+                : netBalance < 0 
+                ? 'text-[#16A34A]' // Green for Credit
+                : 'text-gray-900'
+            }`}>
+              {balanceLabel}
+              {/* Optional: Add a small Dr/Cr label next to the number on the dashboard */}
+              {netBalance !== 0 && (
+                <span className="text-[10px] sm:text-xs ml-1 opacity-75">
+                  {netBalance > 0 ? '' : ''}
+                </span>
+              )}
+            </p>
             <p className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1">Outstanding</p>
           </div>
         </div>

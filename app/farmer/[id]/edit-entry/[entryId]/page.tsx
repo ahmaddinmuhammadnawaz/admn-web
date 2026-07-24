@@ -3,6 +3,7 @@ import { editLedgerEntry } from '@/app/actions'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default async function EditEntryPage({
   params,
@@ -34,7 +35,7 @@ export default async function EditEntryPage({
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
 
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex flex-col gap-5 mb-6">
           <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
             <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
           </Link>
@@ -69,11 +70,11 @@ export default async function EditEntryPage({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount (Rs) *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
               <input
                 name="amount"
                 type="number"
-                step="0.01"
+                step="1"
                 max="9999999999"
                 required
                 defaultValue={currentAmount}
@@ -105,17 +106,15 @@ export default async function EditEntryPage({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
-            <input
+            <textarea
               name="detail"
-              type="text"
+              rows={3}
               defaultValue={entry.detail || ''}
-              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y"
             />
           </div>
 
-          <button type="submit" className="w-full bg-[#131924] text-white font-bold py-3.5 sm:py-4 rounded-xl mt-4 hover:bg-gray-800 active:scale-[0.99] transition-all">
-            Save Changes
-          </button>
+          <SubmitButton>Save Changes</SubmitButton>
         </form>
       </div>
     </main>

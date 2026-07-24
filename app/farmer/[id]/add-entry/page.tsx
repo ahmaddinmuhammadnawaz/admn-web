@@ -1,6 +1,7 @@
 import { addLedgerEntry } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default async function AddEntryPage({
   params,
@@ -17,7 +18,7 @@ export default async function AddEntryPage({
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
 
         {/* Responsive Header: Stacks "Cancel" and "Add Entry" neatly */}
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex flex-col gap-5 mb-6">
           <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
             <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
           </Link>
@@ -46,8 +47,8 @@ export default async function AddEntryPage({
               <input name="entry_date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount (Rs) *</label>
-              <input name="amount" type="number" step="0.01" max="9999999999" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
+              <input name="amount" type="number" step="1" max="9999999999" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
 
@@ -64,12 +65,14 @@ export default async function AddEntryPage({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
-            <input name="detail" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            <textarea 
+              name="detail" 
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y" 
+            />
           </div>
 
-          <button type="submit" className="w-full bg-[#131924] text-white font-bold py-3.5 sm:py-4 rounded-xl mt-4 hover:bg-gray-800 active:scale-[0.99] transition-all">
-            Save Entry
-          </button>
+          <SubmitButton>Save Entry</SubmitButton>
         </form>
       </div>
     </main>

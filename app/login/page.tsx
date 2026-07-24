@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { Mail } from 'lucide-react'
 import PasswordInput from './PasswordInput'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default async function Login({
   searchParams,
@@ -69,9 +70,7 @@ export default async function Login({
             <PasswordInput name="password" />
           </div>
 
-          <button className="w-full bg-[#131924] text-white font-bold py-3.5 rounded-xl mt-2 hover:bg-gray-800 active:scale-[0.99] transition-all">
-            Log In
-          </button>
+          <SubmitButton>Log In</SubmitButton>
 
           {message && (
             <p className="mt-4 text-center text-red-600 text-sm font-medium">

@@ -1,0 +1,16 @@
+# Dependencies & Build artifacts
+node_modules/
+.next/
+dist/
+build/
+out/
+
+# Environment variables & secrets
+.env*
+
+# Logs & temporary files
+*.log
+.DS_Store
+
+# Repomix outputs
+repomix-output.xml

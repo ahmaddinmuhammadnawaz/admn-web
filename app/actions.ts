@@ -16,6 +16,9 @@ export async function addFarmer(formData: FormData) {
     area: (formData.get('area') as string) || null,
     phone: (formData.get('phone') as string) || null,
     reference_person: (formData.get('reference_person') as string) || null,
+    cnic: (formData.get('cnic') as string) || null, 
+    crop: (formData.get('crop') as string) || null,
+    note: (formData.get('note') as string) || null,
     status: 'Active',
   }).select().single()
 
@@ -36,7 +39,7 @@ export async function addLedgerEntry(farmerId: string, formData: FormData) {
   if (!user) throw new Error('Unauthorized')
 
   const type = formData.get('type') as string // 'debit' or 'credit'
-  const amount = parseFloat(formData.get('amount') as string) || 0
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('ledger_entries').insert({
@@ -152,7 +155,7 @@ export async function editLedgerEntry(entryId: string, farmerId: string, formDat
   if (!user) throw new Error('Unauthorized')
 
   const type = formData.get('type') as string // 'Debit' or 'Credit'
-  const amount = parseFloat(formData.get('amount') as string) || 0
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase
@@ -207,4 +210,31 @@ export async function deleteFarmer(farmerId: string) {
   // Refresh the main dashboard and redirect to it
   revalidatePath('/')
   redirect('/')
+}
+export async function editFarmer(farmerId: string, formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { error } = await supabase.from('farmers').update({
+    name: formData.get('name') as string,
+    father_name: (formData.get('father_name') as string) || null,
+    area: (formData.get('area') as string) || null,
+    phone: (formData.get('phone') as string) || null,
+    reference_person: (formData.get('reference_person') as string) || null,
+    cnic: (formData.get('cnic') as string) || null, 
+    crop: (formData.get('crop') as string) || null, 
+    note: (formData.get('note') as string) || null,
+  }).eq('id', farmerId)
+
+  if (error) {
+    console.error('Error updating farmer:', error)
+    throw new Error('Failed to update farmer')
+  }
+
+  // Refresh the dashboard and redirect to the farmer's ledger
+  revalidatePath('/')
+  revalidatePath(`/farmer/${farmerId}`)
+  redirect(`/farmer/${farmerId}`)
 }

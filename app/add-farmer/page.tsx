@@ -1,6 +1,7 @@
 import { addFarmer } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
 
 export default function AddFarmerPage() {
   return (
@@ -45,10 +46,26 @@ export default function AddFarmerPage() {
               <input name="reference_person" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
+              <input name="cnic" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Main Crop</label>
+              <input name="crop" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
+            <textarea 
+              name="note" 
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-none"
+            ></textarea>
+          </div>
 
-          <button type="submit" className="w-full bg-[#131924] text-white font-bold py-3.5 sm:py-4 rounded-xl mt-4 hover:bg-gray-800 active:scale-[0.99] transition-all">
-            Save Farmer
-          </button>
+         <SubmitButton>Save Farmer</SubmitButton>
         </form>
       </div>
     </main>

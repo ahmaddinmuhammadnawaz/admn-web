@@ -4,7 +4,9 @@ import { notFound } from 'next/navigation'
 import LedgerClient from './LedgerClient'
 import { toggleFarmerStatus, deleteFarmer } from '@/app/actions'
 import DeleteFarmerButton from './DeleteFarmerButton'
-import { ArrowLeft, Plus, User, Phone, MapPin, Handshake } from 'lucide-react'
+import { ArrowLeft, Plus, User, Phone, MapPin, Handshake, Pencil, IdCard, Wheat, StickyNote } from 'lucide-react'
+import ToggleStatusButton from './ToggleStatusButton'
+
 
 export default async function FarmerLedger({
   params,
@@ -25,23 +27,27 @@ export default async function FarmerLedger({
     notFound()
   }
 
-  // Fetch ledger entries
+// Fetch ledger entries
   const { data: entries, error: entriesError } = await supabase
     .from('ledger_entries')
     .select('*')
     .eq('farmer_id', id)
     .order('entry_date', { ascending: true })
+    .order('created_at', { ascending: true }) 
 
   if (entriesError) {
     return <div className="p-8 text-red-600">Error loading ledger entries.</div>
   }
 
-  // Calculate running balance and reverse for display (newest first)
+// Calculate running balance and reverse for display (newest first)
   let currentBalance = 0
   const processedEntries = entries.map((entry) => {
     const debit = Number(entry.debit) || 0
     const credit = Number(entry.credit) || 0
-    currentBalance += (debit - credit)
+    
+    // Use Math.round to safely handle JS float quirks up to 2 decimals
+    currentBalance = Math.round((currentBalance + debit - credit) * 100) / 100
+    
     return {
       ...entry,
       runningBalance: currentBalance,
@@ -57,7 +63,7 @@ export default async function FarmerLedger({
 <div className="bg-[#131924] w-full safe-top">
   <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-6">
 
-    {/* Row 1: Back + Actions */}
+{/* Row 1: Back + Actions */}
     <div className="flex items-center justify-between mb-6">
       <Link
         href="/"
@@ -67,14 +73,20 @@ export default async function FarmerLedger({
         <ArrowLeft size={22} strokeWidth={2.25} />
       </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* ADD THIS EDIT LINK */}
+        <Link 
+          href={`/farmer/${farmer.id}/edit`} 
+          className="text-white/80 hover:text-white p-2 sm:px-3 sm:py-2 flex items-center justify-center transition-colors rounded-lg hover:bg-white/10"
+          title="Edit Farmer"
+        >
+          <Pencil size={18} strokeWidth={2.25} />
+          <span className="hidden md:inline ml-2 text-sm font-medium">Edit</span>
+        </Link>
+        <div className="w-px h-4 bg-white/20 hidden sm:block" />
+        
         <form action={toggleStatus}>
-          <button
-            type="submit"
-            className="text-white/70 hover:text-white text-sm font-medium transition-colors"
-          >
-            {farmer.status === 'Active' ? 'Close Account' : 'Re-open Account'}
-          </button>
+          <ToggleStatusButton currentStatus={farmer.status} />
         </form>
         <div className="w-px h-4 bg-white/20" />
         <form action={deleteAccount}>
@@ -110,6 +122,22 @@ export default async function FarmerLedger({
               <Handshake size={14} strokeWidth={2} /> Ref: {farmer.reference_person}
             </p>
           )}
+          {farmer.cnic && (
+            <p className="flex items-center gap-1.5">
+              <IdCard size={14} strokeWidth={2} /> {farmer.cnic}
+            </p>
+          )}
+          {farmer.crop && (
+            <p className="flex items-center gap-1.5">
+              <Wheat size={14} strokeWidth={2} /> {farmer.crop}
+            </p>
+          )}
+          {farmer.note && (
+          <div className="mt-4 flex items-start gap-2.5 text-sm text-white/80 bg-white/10 p-3.5 rounded-xl border border-white/10 w-full max-w-xl">
+            <StickyNote size={18} strokeWidth={2} className="shrink-0 mt-0.5 text-white/60" />
+            <p className="leading-relaxed whitespace-pre-wrap">{farmer.note}</p>
+          </div>
+        )}
         </div>
       </div>
 
@@ -122,10 +150,10 @@ export default async function FarmerLedger({
             currentBalance < 0 ? 'text-[#6EE7A8]' : currentBalance > 0 ? 'text-[#FCA5A5]' : 'text-white'
           }`}>
             {currentBalance === 0
-              ? 'Rs 0'
+              ? '0'
               : currentBalance > 0
-                ? `Rs ${currentBalance} Debit`
-                : `Rs ${Math.abs(currentBalance)} Credit`}
+                ? `Debit ${currentBalance}`
+                : `Credit ${Math.abs(currentBalance)}`}
           </p>
         </div>
 
