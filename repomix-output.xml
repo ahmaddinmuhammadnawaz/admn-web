@@ -1,0 +1,2914 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  add-farmer/
+    loading.tsx
+    page.tsx
+  farmer/
+    [id]/
+      add-entry/
+        loading.tsx
+        page.tsx
+      edit/
+        loading.tsx
+        page.tsx
+      edit-entry/
+        [entryId]/
+          loading.tsx
+          page.tsx
+      DeleteFarmerButton.tsx
+      LedgerClient.tsx
+      loading.tsx
+      page.tsx
+      ToggleStatusButton.tsx
+  login/
+    page.tsx
+    PasswordInput.tsx
+  settings/
+    loading.tsx
+    page.tsx
+    SettingsForm.tsx
+  actions.ts
+  DashboardClient.tsx
+  globals.css
+  layout.tsx
+  loading.tsx
+  page.tsx
+components/
+  AutoLogout.tsx
+  ConfirmModal.tsx
+  LogoutButton.tsx
+  SubmitButton.tsx
+public/
+  android-chrome-192x192.png
+  android-chrome-512x512.png
+  apple-icon.png
+  apple-touch-icon.png
+  favicon-16x16.png
+  favicon-32x32.png
+  favicon.ico
+  file.svg
+  globe.svg
+  icon.png
+  manifest.json
+  next.svg
+  site.webmanifest
+  vercel.svg
+  window.svg
+utils/
+  supabase/
+    client.ts
+    server.ts
+.gitignore
+.repomixignore
+AGENTS.md
+CLAUDE.md
+eslint.config.mjs
+next.config.ts
+package.json
+postcss.config.mjs
+proxy.ts
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/add-farmer/loading.tsx">
+export default function AddFarmerLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10 animate-pulse">
+        
+        {/* Header Skeleton */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+          <div className="h-7 w-48 bg-gray-200 rounded"></div>
+        </div>
+        
+        {/* Form Fields Skeleton (Matches page.tsx perfectly now) */}
+        <div className="flex flex-col gap-5">
+          {/* Name */}
+          <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          
+          {/* Father Name / Phone */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          {/* Area / Reference Person */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+
+          {/* CNIC / Main Crop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          {/* Notes */}
+          <div className="h-24 w-full bg-gray-200 rounded-xl"></div>
+
+          {/* Submit Button */}
+          <div className="h-14 w-full bg-gray-300 rounded-xl mt-4"></div>
+        </div>
+
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/add-entry/loading.tsx">
+export default function EntryLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10 animate-pulse">
+        
+        {/* Header Skeleton */}
+        <div className="flex flex-col gap-5 mb-6">
+          <div className="w-16 h-4 bg-gray-200 rounded"></div>
+          <div className="h-8 w-40 bg-gray-200 rounded"></div>
+        </div>
+        
+        {/* Form Fields Skeleton */}
+        <div className="flex flex-col gap-5">
+          {/* Debit/Credit Toggle Skeleton */}
+          <div className="grid grid-cols-2 gap-4 mb-2">
+            <div className="h-12 bg-gray-200 rounded-xl"></div>
+            <div className="h-12 bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="h-24 w-full bg-gray-200 rounded-xl"></div>
+          <div className="h-14 w-full bg-gray-300 rounded-xl mt-4"></div>
+        </div>
+
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/edit/loading.tsx">
+export default function EditFarmerLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10 animate-pulse">
+        
+        {/* Header Skeleton */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+          <div className="h-7 w-48 bg-gray-200 rounded"></div>
+        </div>
+        
+        {/* Form Fields Skeleton */}
+        <div className="flex flex-col gap-5">
+          <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="h-24 w-full bg-gray-200 rounded-xl"></div>
+          <div className="h-14 w-full bg-gray-300 rounded-xl mt-4"></div>
+        </div>
+
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/edit/page.tsx">
+import { createClient } from '@/utils/supabase/server'
+import { editFarmer } from '@/app/actions'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default async function EditFarmerPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  // Fetch the existing farmer data to pre-fill the form
+  const { data: farmer, error } = await supabase
+    .from('farmers')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !farmer) {
+    notFound()
+  }
+
+  // Bind the farmer ID to the server action
+  const updateFarmerWithId = editFarmer.bind(null, id)
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
+
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Link
+            href={`/farmer/${id}`}
+            className="text-[#6B7280] hover:text-[#131924] transition-colors p-1 -ml-1 shrink-0"
+            title="Cancel"
+          >
+            <ArrowLeft size={22} strokeWidth={2.25} />
+          </Link>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Edit Farmer Info</h1>
+        </div>
+
+        <form action={updateFarmerWithId} className="flex flex-col gap-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <input name="name" type="text" required defaultValue={farmer.name} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Father Name</label>
+              <input name="father_name" type="text" defaultValue={farmer.father_name || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input name="phone" type="tel" defaultValue={farmer.phone || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+              <input name="area" type="text" defaultValue={farmer.area || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Person</label>
+              <input name="reference_person" type="text" defaultValue={farmer.reference_person || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
+              <input name="cnic" type="text" defaultValue={farmer.cnic || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Main Crop</label>
+              <input name="crop" type="text" defaultValue={farmer.crop || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
+            <textarea 
+              name="note" 
+              rows={3} 
+              defaultValue={farmer.note || ''}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-none"
+            ></textarea>
+          </div>
+
+         <SubmitButton>Save Changes</SubmitButton>
+        </form>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/edit-entry/[entryId]/loading.tsx">
+export default function EntryLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10 animate-pulse">
+        
+        {/* Header Skeleton */}
+        <div className="flex flex-col gap-5 mb-6">
+          <div className="w-16 h-4 bg-gray-200 rounded"></div>
+          <div className="h-8 w-40 bg-gray-200 rounded"></div>
+        </div>
+        
+        {/* Form Fields Skeleton */}
+        <div className="flex flex-col gap-5">
+          {/* Debit/Credit Toggle Skeleton */}
+          <div className="grid grid-cols-2 gap-4 mb-2">
+            <div className="h-12 bg-gray-200 rounded-xl"></div>
+            <div className="h-12 bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+          </div>
+          
+          <div className="h-24 w-full bg-gray-200 rounded-xl"></div>
+          <div className="h-14 w-full bg-gray-300 rounded-xl mt-4"></div>
+        </div>
+
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/loading.tsx">
+export default function FarmerLedgerLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
+      {/* Top Header Skeleton */}
+      <div className="bg-[#131924] w-full safe-top">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-6">
+          
+          {/* Row 1: Back + Actions Skeleton */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="w-6 h-6 bg-white/10 rounded-md animate-pulse"></div>
+            <div className="w-32 h-8 bg-white/10 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Row 2: Farmer info (left) + Balance (right) */}
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+            <div className="min-w-0 flex-1 w-full">
+              <div className="h-8 w-48 sm:w-64 bg-white/10 rounded-lg animate-pulse mb-4"></div>
+              
+              {/* Badges Skeleton */}
+              <div className="flex flex-wrap gap-2">
+                <div className="h-5 w-24 bg-white/5 rounded-md animate-pulse"></div>
+                <div className="h-5 w-28 bg-white/5 rounded-md animate-pulse"></div>
+                <div className="h-5 w-20 bg-white/5 rounded-md animate-pulse"></div>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
+              <div className="h-3 w-24 bg-white/10 rounded animate-pulse"></div>
+              <div className="h-8 w-32 bg-white/10 rounded-lg animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ledger Table area */}
+      <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
+        {/* Search/Filter Skeleton */}
+        <div className="bg-gray-200/50 p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm h-20 animate-pulse"></div>
+
+        {/* Table Skeleton */}
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+          <div className="h-10 bg-[#F7F8FA] border-b border-[#E5E7EB]"></div>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-14 border-b border-[#E5E7EB] flex items-center px-4 gap-4 animate-pulse">
+              <div className="h-4 w-16 bg-gray-200 rounded"></div>
+              <div className="h-4 w-32 bg-gray-200 rounded hidden sm:block"></div>
+              <div className="h-4 flex-1 bg-gray-200 rounded"></div>
+              <div className="h-4 w-20 bg-gray-200 rounded hidden md:block"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/ToggleStatusButton.tsx">
+'use client'
+
+import { useState, useRef } from 'react'
+import { ConfirmModal } from '@/components/ConfirmModal'
+
+export default function ToggleStatusButton({ currentStatus }: { currentStatus: string }) {
+  const [showModal, setShowModal] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const isActive = currentStatus === 'Active'
+  const buttonText = isActive ? 'Close Account' : 'Re-open Account'
+  const modalTitle = isActive ? 'Close Account' : 'Re-open Account'
+  const modalDesc = isActive 
+    ? 'Are you sure you want to close this account? It will be moved to your Closed History.'
+    : 'Are you sure you want to re-open this account? It will become active and appear on your main dashboard again.'
+
+  const handleConfirm = () => {
+    // Find the parent form containing the server action and submit it
+    const form = buttonRef.current?.closest('form')
+    if (form) form.requestSubmit()
+    setShowModal(false)
+  }
+
+  return (
+    <>
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => setShowModal(true)}
+        className="text-white/70 hover:text-white text-sm font-medium transition-colors"
+      >
+        {buttonText}
+      </button>
+
+      <ConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleConfirm}
+        title={modalTitle}
+        description={modalDesc}
+        confirmText={buttonText}
+        isDestructive={isActive} // Makes the confirm button red only if closing
+      />
+    </>
+  )
+}
+</file>
+
+<file path="app/login/PasswordInput.tsx">
+'use client'
+
+import { useState } from 'react'
+import { Lock, Eye, EyeOff } from 'lucide-react'
+
+export default function PasswordInput({ 
+  name, 
+  placeholder = "••••••••", 
+  minLength 
+}: { 
+  name: string; 
+  placeholder?: string;
+  minLength?: number;
+}) {
+  const [showPassword, setShowPassword] = useState(false)
+
+  return (
+    <div className="relative">
+      <Lock size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+      
+      <input
+        className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:border-[#131924] focus:ring-1 focus:ring-[#131924] bg-white text-black"
+        type={showPassword ? "text" : "password"}
+        name={name}
+        placeholder={placeholder}
+        minLength={minLength}
+        required
+      />
+      
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#131924] transition-colors p-1"
+        title={showPassword ? "Hide password" : "Show password"}
+      >
+        {showPassword ? (
+          <EyeOff size={17} strokeWidth={2} />
+        ) : (
+          <Eye size={17} strokeWidth={2} />
+        )}
+      </button>
+    </div>
+  )
+}
+</file>
+
+<file path="app/settings/loading.tsx">
+export default function SettingsLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
+      {/* Top Header Skeleton */}
+        <div className="bg-[#131924] w-full safe-top px-4 sm:px-6 py-6 sm:py-8 pb-12 sm:pb-14">
+        <div className="max-w-2xl mx-auto w-full animate-pulse">
+            {/* Added mt-5 here to push the back button and title down */}
+            <div className="w-8 h-8 bg-white/20 rounded-md mb-4 mt-5"></div>
+            <div className="h-8 w-32 bg-white/20 rounded-lg"></div>
+        </div>
+        </div>
+
+      {/* Settings Card Skeleton */}
+      <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-2xl mx-auto w-full -mt-6 sm:-mt-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] shadow-sm p-5 sm:p-8 animate-pulse">
+          
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+            <div className="h-6 w-40 bg-gray-200 rounded"></div>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-200 rounded-xl"></div>
+            <div className="h-14 w-full bg-gray-300 rounded-xl mt-2"></div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/settings/SettingsForm.tsx">
+'use client'
+
+import { useState, useRef } from 'react'
+import { ConfirmModal } from '@/components/ConfirmModal'
+
+export default function SettingsForm({ 
+  children,
+  action 
+}: { 
+  children: React.ReactNode,
+  action: (formData: FormData) => void | Promise<void>
+}) {
+  const [showModal, setShowModal] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault() // Stop immediate submission
+    
+    const formData = new FormData(e.currentTarget as HTMLFormElement)
+    if (formData.get('newPassword') !== formData.get('confirmPassword')) {
+      alert("New passwords do not match!")
+      return
+    }
+    
+    setShowModal(true)
+  }
+
+  return (
+    <>
+      <form ref={formRef} action={action} onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {children}
+      </form>
+
+      <ConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => {
+           setShowModal(false)
+           // requestSubmit is crucial here for React 19 Server Actions
+           formRef.current?.requestSubmit() 
+        }}
+        title="Change Password"
+        description="Are you sure you want to update your password? You will need to use the new password next time you log in."
+        confirmText="Update Password"
+      />
+    </>
+  )
+}
+</file>
+
+<file path="app/DashboardClient.tsx">
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { Search, X, MapPin, Phone, ChevronRight, Users } from 'lucide-react'
+
+export default function DashboardClient({ initialFarmers }: { initialFarmers: any[] }) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('Active')
+
+  // Filter the farmers just like the Dart logic in home_screen.dart
+  const filteredFarmers = initialFarmers.filter((farmer) => {
+    if (farmer.status !== statusFilter) return false
+
+    if (searchQuery === '') return true
+
+    const query = searchQuery.toLowerCase()
+    const nameMatch = farmer.name.toLowerCase().includes(query)
+    const areaMatch = (farmer.area || '').toLowerCase().includes(query)
+    const phoneMatch = (farmer.phone || '').toLowerCase().includes(query)
+    const refMatch = (farmer.reference_person || '').toLowerCase().includes(query)
+
+    return nameMatch || areaMatch || phoneMatch || refMatch
+  })
+
+  return (
+    <>
+      {/* Search and Filters */}
+      <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
+        <div className="relative mb-4">
+          <Search size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search name, area, phone..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#F7F8FA] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#131924] text-sm"
+          />
+          {searchQuery !== '' && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#131924] transition-colors"
+              title="Clear search"
+            >
+              <X size={16} strokeWidth={2} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto thin-scrollbar -mx-1 px-1 pb-0.5">
+          <button
+            onClick={() => setStatusFilter('Active')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border whitespace-nowrap shrink-0 ${
+              statusFilter === 'Active'
+                ? 'bg-[#16A34A] text-white border-[#16A34A]'
+                : 'bg-[#F7F8FA] text-[#16A34A] border-[#E5E7EB] hover:border-[#16A34A]'
+            }`}
+          >
+            Active Accounts
+          </button>
+          <button
+            onClick={() => setStatusFilter('Closed')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border whitespace-nowrap shrink-0 ${
+              statusFilter === 'Closed'
+                ? 'bg-[#6B7280] text-white border-[#6B7280]'
+                : 'bg-[#F7F8FA] text-[#6B7280] border-[#E5E7EB] hover:border-[#6B7280]'
+            }`}
+          >
+            Closed History
+          </button>
+        </div>
+      </div>
+
+      {/* Farmers Grid */}
+      {filteredFarmers.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
+          <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
+            <Users size={24} strokeWidth={1.75} />
+          </div>
+          <p className="text-base font-medium text-gray-700">
+            {searchQuery !== '' ? 'No matches found' : `No ${statusFilter.toLowerCase()} accounts yet`}
+          </p>
+          <p className="text-sm text-gray-400 mt-1">
+            {searchQuery !== '' ? 'Try a different name, area, or phone number.' : 'New farmers you add will show up here.'}
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {filteredFarmers.map((farmer) => (
+            <Link href={`/farmer/${farmer.id}`} key={farmer.id} className="block group">
+              <div className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-sm group-hover:border-[#131924] group-hover:shadow-md transition-all h-full flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h2 className="font-bold text-lg text-gray-800 truncate">{farmer.name}</h2>
+                  <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5 truncate">
+                    <MapPin size={13} strokeWidth={2} className="shrink-0" />
+                    {farmer.area || 'No area specified'}
+                  </p>
+                  {farmer.phone && (
+                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5 truncate">
+                      <Phone size={13} strokeWidth={2} className="shrink-0" />
+                      {farmer.phone}
+                    </p>
+                  )}
+                </div>
+                <ChevronRight size={18} strokeWidth={2} className="text-gray-300 group-hover:text-[#131924] transition-colors shrink-0 mt-1" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --background: #F7F8FA;
+  --foreground: #131924;
+  --brand: #131924;
+  --border: #E5E7EB;
+  --danger: #DC2626;
+  --success: #16A34A;
+  --muted: #6B7280;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+}
+
+/* Tabular numerals for money/ledger figures — keeps columns aligned, feels precise */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Safe-area padding helpers for notch/home-indicator devices */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.fab-safe-bottom {
+  bottom: calc(1.75rem + env(safe-area-inset-bottom));
+}
+
+/* Slim, unobtrusive scrollbars for horizontal table scroll on tablets */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #D1D5DB;
+  border-radius: 999px;
+}
+
+/* Clear, visible keyboard focus that still fits the premium aesthetic */
+:focus-visible {
+  outline: 2px solid #131924;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</file>
+
+<file path="app/loading.tsx">
+import { Loader2 } from 'lucide-react'
+
+export default function GlobalLoading() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
+      {/* Top Bar Skeleton */}
+      <div className="bg-[#131924] w-full safe-top">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex justify-between items-center text-white">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 shrink-0 rounded-xl bg-white/10 animate-pulse"></div>
+            <div className="h-4 w-32 sm:w-48 bg-white/10 rounded-md animate-pulse"></div>
+          </div>
+          <div className="flex gap-4">
+            <div className="w-6 h-6 bg-white/10 rounded-full animate-pulse"></div>
+            <div className="w-6 h-6 bg-white/10 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Stats Row Skeleton */}
+        <div className="flex gap-3 mb-6">
+          <div className="bg-gray-200/50 rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shrink-0 min-w-[72px] h-20 animate-pulse"></div>
+          <div className="bg-gray-200/50 rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shrink-0 min-w-[72px] h-20 animate-pulse"></div>
+          <div className="bg-gray-200/50 rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] flex-1 h-20 animate-pulse"></div>
+        </div>
+
+        {/* Search Bar Skeleton */}
+        <div className="bg-gray-200/50 rounded-2xl border border-[#E5E7EB] mb-6 h-[72px] animate-pulse shadow-sm"></div>
+
+        {/* Farmers Grid Skeleton */}
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="p-5 bg-gray-200/50 border border-[#E5E7EB] rounded-xl shadow-sm h-[104px] animate-pulse flex flex-col justify-center gap-3">
+              <div className="h-5 w-3/4 bg-gray-300/50 rounded-md"></div>
+              <div className="h-3 w-1/2 bg-gray-300/50 rounded-md"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="components/AutoLogout.tsx">
+'use client'
+
+import { useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
+import { signOut } from '@/app/actions' // Imports your existing server action
+
+export function AutoLogout() {
+  const pathname = usePathname()
+  // 30 minutes in milliseconds
+  const TIMEOUT_MS = 30 * 60 * 1000 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    // Disable the idle timeout if the user is already on the login screen
+    if (pathname === '/login') return
+
+    const handleLogout = async () => {
+      await signOut() 
+    }
+
+    const resetTimer = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(handleLogout, TIMEOUT_MS)
+    }
+
+    // Initialize the timer immediately
+    resetTimer()
+
+    // Events that count as user "activity"
+    const events = ['mousemove', 'keydown', 'wheel', 'click', 'scroll', 'touchstart']
+    const handleActivity = () => resetTimer()
+    
+    // Attach passive event listeners to the window
+    events.forEach(event => {
+      window.addEventListener(event, handleActivity, { passive: true })
+    })
+
+    // Cleanup listeners and timer on unmount
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      events.forEach(event => {
+        window.removeEventListener(event, handleActivity)
+      })
+    }
+  }, [pathname])
+
+  return null // This component runs purely in the background
+}
+</file>
+
+<file path="components/ConfirmModal.tsx">
+'use client'
+
+import { useState, useEffect } from 'react'
+import { X, AlertTriangle, Loader2 } from 'lucide-react'
+import { useFormStatus } from 'react-dom'
+
+interface ConfirmModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title: string
+  description: string
+  confirmText?: string
+  isDestructive?: boolean
+  requireWord?: string
+  isLoading?: boolean
+}
+
+export function ConfirmModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  confirmText = 'Confirm',
+  isDestructive = false,
+  requireWord,
+  isLoading = false,
+}: ConfirmModalProps) {
+  const [typedWord, setTypedWord] = useState('')
+  const { pending } = useFormStatus() 
+  const isCurrentlyLoading = pending || isLoading
+
+  // Reset input when modal closes
+  useEffect(() => {
+    if (!isOpen) setTypedWord('')
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  const isButtonDisabled = (requireWord ? typedWord !== requireWord : false) || isCurrentlyLoading
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#131924]/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#E5E7EB] overflow-hidden">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB]">
+          <div className="flex items-center gap-2">
+            {isDestructive && <AlertTriangle size={20} className="text-[#DC2626]" />}
+            <h2 className="text-lg font-bold text-[#131924]">{title}</h2>
+          </div>
+          <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#131924] transition-colors p-1">
+            <X size={20} strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-5 flex flex-col gap-4">
+          <p className="text-sm text-[#6B7280] leading-relaxed">
+            {description}
+          </p>
+
+          {requireWord && (
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Type <span className="font-bold select-all text-[#131924]">{requireWord}</span> to confirm
+              </label>
+              <input
+                type="text"
+                value={typedWord}
+                onChange={(e) => setTypedWord(e.target.value)}
+                placeholder={requireWord}
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#DC2626] focus:border-[#DC2626] focus:outline-none text-black"
+                autoComplete="off"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="p-5 pt-0 flex gap-3">
+          <button
+            onClick={onClose}
+            disabled={isCurrentlyLoading}
+            className="flex-1 px-4 py-3 rounded-xl font-bold text-[#6B7280] bg-[#F7F8FA] hover:bg-gray-200 transition-colors disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          
+          <button
+            onClick={onConfirm}
+            disabled={isButtonDisabled}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+              isDestructive ? 'bg-[#DC2626] hover:bg-red-700' : 'bg-[#131924] hover:bg-gray-800'
+            }`}
+          >
+            {/* 5. Show spinner if loading */}
+            {isCurrentlyLoading && <Loader2 size={18} className="animate-spin" />}
+            {isCurrentlyLoading ? 'Processing...' : confirmText}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="components/LogoutButton.tsx">
+'use client'
+
+import { useState, useRef } from 'react'
+import { LogOut, Loader2 } from 'lucide-react'
+import { useFormStatus } from 'react-dom'
+import { ConfirmModal } from './ConfirmModal'
+
+export function LogoutButton() {
+  const [showModal, setShowModal] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  
+  // This hook detects if the parent form is currently submitting
+  const { pending } = useFormStatus()
+
+  return (
+    <>
+      <button 
+        ref={buttonRef}
+        type="button" 
+        // If it's pending, clicking does nothing
+        onClick={() => !pending && setShowModal(true)}
+        disabled={pending}
+        className="text-white/90 hover:text-white transition-colors p-1 disabled:opacity-50" 
+        title={pending ? "Signing out..." : "Sign out"}
+      >
+        {/* Swap the icon for a spinner when pending */}
+        {pending ? (
+          <Loader2 size={21} strokeWidth={2} className="animate-spin" />
+        ) : (
+          <LogOut size={21} strokeWidth={2} />
+        )}
+      </button>
+
+      <ConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => {
+          // Close the modal instantly
+          setShowModal(false)
+          // Submit the form, triggering the 'pending' state above
+          const form = buttonRef.current?.closest('form')
+          if (form) form.requestSubmit()
+        }}
+        title="Sign Out"
+        description="Are you sure you want to log out of your account?"
+        confirmText="Log Out"
+      />
+    </>
+  )
+}
+</file>
+
+<file path="components/SubmitButton.tsx">
+'use client'
+
+import { useFormStatus } from 'react-dom'
+import { Loader2 } from 'lucide-react'
+
+export function SubmitButton({ 
+  children, 
+  className 
+}: { 
+  children: React.ReactNode, 
+  className?: string 
+}) {
+  const { pending } = useFormStatus()
+
+  return (
+    <button 
+      type="submit" 
+      disabled={pending}
+      className={`w-full bg-[#131924] text-white font-bold py-3.5 sm:py-4 rounded-xl mt-4 hover:bg-gray-800 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${className || ''}`}
+    >
+      {pending && <Loader2 size={18} className="animate-spin" />}
+      {pending ? 'Processing...' : children}
+    </button>
+  )
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/site.webmanifest">
+{
+  "name": "ADMN",
+  "short_name": "ADMN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131924",
+  "theme_color": "#131924",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="utils/supabase/client.ts">
+import { createBrowserClient } from '@supabase/ssr'
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+</file>
+
+<file path="utils/supabase/server.ts">
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+
+export async function createClient() {
+  const cookieStore = await cookies()
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing user sessions.
+          }
+        },
+      },
+    }
+  )
+}
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path=".repomixignore">
+# Dependencies & Build artifacts
+node_modules/
+.next/
+dist/
+build/
+out/
+
+# Environment variables & secrets
+.env*
+
+# Logs & temporary files
+*.log
+.DS_Store
+
+# Repomix outputs
+repomix-output.xml
+</file>
+
+<file path="AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+</file>
+
+<file path="CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="proxy.ts">
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
+
+export async function proxy(request: NextRequest) { 
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  // Refresh the session
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // If there is no user and the route is NOT the login page, redirect to login
+  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // If there is a user and they are on the login page, redirect to dashboard
+  if (user && request.nextUrl.pathname.startsWith('/login')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
+  return supabaseResponse
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - manifest.json, site.webmanifest (PWA manifest)
+     * - Image files (svg, png, jpg, jpeg, gif, webp)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|site.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="app/add-farmer/page.tsx">
+import { addFarmer } from '@/app/actions'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default function AddFarmerPage() {
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
+
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Link
+            href="/"
+            className="text-[#6B7280] hover:text-[#131924] transition-colors p-1 -ml-1 shrink-0"
+            title="Cancel"
+          >
+            <ArrowLeft size={22} strokeWidth={2.25} />
+          </Link>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Farmer</h1>
+        </div>
+
+        <form action={addFarmer} className="flex flex-col gap-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <input name="name" type="text" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Father Name</label>
+              <input name="father_name" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input name="phone" type="tel" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
+              <input name="area" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Person</label>
+              <input name="reference_person" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
+              <input name="cnic" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Main Crop</label>
+              <input name="crop" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
+            <textarea 
+              name="note" 
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-none"
+            ></textarea>
+          </div>
+
+         <SubmitButton>Save Farmer</SubmitButton>
+        </form>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/add-entry/page.tsx">
+import { addLedgerEntry } from '@/app/actions'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default async function AddEntryPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+
+  // Bind the farmer ID to the server action so it knows which ledger to update
+  const addEntryWithId = addLedgerEntry.bind(null, id)
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
+
+        {/* Responsive Header: Stacks "Cancel" and "Add Entry" neatly */}
+        <div className="flex flex-col gap-5 mb-6">
+          <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
+            <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
+          </Link>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#131924]">Add Entry</h1>
+        </div>
+
+        <form action={addEntryWithId} className="flex flex-col gap-5">
+          <div className="grid grid-cols-2 gap-4 mb-2">
+            <label className="cursor-pointer">
+              <input type="radio" name="type" value="Debit" className="peer sr-only" defaultChecked />
+              <div className="text-center py-3 rounded-xl border border-[#E5E7EB] peer-checked:bg-[#DC2626]/10 peer-checked:border-[#DC2626] peer-checked:text-[#DC2626] font-bold transition-all">
+                Debit
+              </div>
+            </label>
+            <label className="cursor-pointer">
+              <input type="radio" name="type" value="Credit" className="peer sr-only" />
+              <div className="text-center py-3 rounded-xl border border-[#E5E7EB] peer-checked:bg-[#16A34A]/10 peer-checked:border-[#16A34A] peer-checked:text-[#16A34A] font-bold transition-all">
+                Credit
+              </div>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+              <input name="entry_date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
+              <input name="amount" type="number" step="1" max="9999999999" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Page No.</label>
+              <input name="page_no" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
+              <input name="reference" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
+            <textarea 
+              name="detail" 
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y" 
+            />
+          </div>
+
+          <SubmitButton>Save Entry</SubmitButton>
+        </form>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/edit-entry/[entryId]/page.tsx">
+import { createClient } from '@/utils/supabase/server'
+import { editLedgerEntry } from '@/app/actions'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default async function EditEntryPage({
+  params,
+}: {
+  params: Promise<{ id: string; entryId: string }>
+}) {
+  const { id, entryId } = await params
+  const supabase = await createClient()
+
+  // Fetch the existing entry data to pre-fill the form
+  const { data: entry, error } = await supabase
+    .from('ledger_entries')
+    .select('*')
+    .eq('id', entryId)
+    .single()
+
+  if (error || !entry) {
+    notFound()
+  }
+
+  // Determine current type and amount for pre-filling
+  const isDebit = Number(entry.debit) > 0
+  const currentAmount = isDebit ? entry.debit : entry.credit
+
+  // Bind both the entry ID and farmer ID to the server action
+  const editEntryWithIds = editLedgerEntry.bind(null, entryId, id)
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
+
+        <div className="flex flex-col gap-5 mb-6">
+          <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
+            <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
+          </Link>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#131924]">Edit Transaction</h1>
+        </div>
+
+        <form action={editEntryWithIds} className="flex flex-col gap-5">
+          <div className="grid grid-cols-2 gap-4 mb-2">
+            <label className="cursor-pointer">
+              <input type="radio" name="type" value="Debit" className="peer sr-only" defaultChecked={isDebit} />
+              <div className="text-center py-3 rounded-xl border border-[#E5E7EB] peer-checked:bg-[#DC2626]/10 peer-checked:border-[#DC2626] peer-checked:text-[#DC2626] font-bold transition-all">
+                Debit
+              </div>
+            </label>
+            <label className="cursor-pointer">
+              <input type="radio" name="type" value="Credit" className="peer sr-only" defaultChecked={!isDebit} />
+              <div className="text-center py-3 rounded-xl border border-[#E5E7EB] peer-checked:bg-[#16A34A]/10 peer-checked:border-[#16A34A] peer-checked:text-[#16A34A] font-bold transition-all">
+                Credit
+              </div>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+              <input
+                name="entry_date"
+                type="date"
+                required
+                defaultValue={new Date(entry.entry_date).toISOString().split('T')[0]}
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
+              <input
+                name="amount"
+                type="number"
+                step="1"
+                max="9999999999"
+                required
+                defaultValue={currentAmount}
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Page No.</label>
+              <input
+                name="page_no"
+                type="text"
+                defaultValue={entry.page_no || ''}
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
+              <input
+                name="reference"
+                type="text"
+                defaultValue={entry.reference || ''}
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
+            <textarea
+              name="detail"
+              rows={3}
+              defaultValue={entry.detail || ''}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y"
+            />
+          </div>
+
+          <SubmitButton>Save Changes</SubmitButton>
+        </form>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/DeleteFarmerButton.tsx">
+'use client'
+
+import { useState, useRef } from 'react'
+import { Trash2 } from 'lucide-react'
+import { ConfirmModal } from '@/components/ConfirmModal'
+
+export default function DeleteFarmerButton() {
+  const [showModal, setShowModal] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const handleConfirm = () => {
+    // Find the closest form (the one holding the delete action) and submit it
+    const form = buttonRef.current?.closest('form')
+    if (form) form.requestSubmit()
+    setShowModal(false)
+  }
+
+  return (
+    <>
+      <button
+        ref={buttonRef}
+        type="button" // Changed from "submit" so it doesn't fire immediately
+        onClick={() => setShowModal(true)}
+        className="text-white/80 hover:text-red-400 p-2 sm:px-3 sm:py-2 flex items-center justify-center transition-colors rounded-lg hover:bg-red-500/10"
+        title="Delete Account"
+      >
+        <Trash2 size={18} strokeWidth={2.25} />
+        <span className="hidden md:inline ml-2 text-sm font-medium">Delete</span>
+      </button>
+
+      <ConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleConfirm}
+        title="Delete Farmer"
+        description="Are you sure you want to completely delete this farmer and all their ledger entries? This action cannot be undone."
+        confirmText="Delete Forever"
+        isDestructive={true}
+        requireWord="DELETE" // This enables the text input requirement
+      />
+    </>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/LedgerClient.tsx">
+'use client'
+
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { deleteLedgerEntry } from '@/app/actions'
+import { ConfirmModal } from '@/components/ConfirmModal'
+import { Search, X, Pencil, Trash2, Receipt, Loader2 } from 'lucide-react'
+
+
+export default function LedgerClient({ initialEntries }: { initialEntries: any[] }) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterType, setFilterType] = useState('All')
+  const [isPending, startTransition] = useTransition()
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Create a handler for the delete button
+  const handleDelete = (entryId: string, farmerId: string) => {
+    if (window.confirm('Are you sure you want to delete this transaction? This will recalculate the balance.')) {
+      setDeletingId(entryId)
+      startTransition(async () => {
+        await deleteLedgerEntry(entryId, farmerId)
+        setDeletingId(null)
+      })
+    }
+  }
+
+  const [deleteModal, setDeleteModal] = useState<{isOpen: boolean, entryId: string | null, farmerId: string | null}>({
+    isOpen: false,
+    entryId: null,
+    farmerId: null
+  })
+
+  const handleConfirmDelete = async () => {
+    if (deleteModal.entryId && deleteModal.farmerId) {
+      setIsDeleting(true) // 2. Start loading
+      
+      try {
+        await deleteLedgerEntry(deleteModal.entryId, deleteModal.farmerId)
+      } finally {
+        // 3. Stop loading and close modal regardless of success/fail
+        setIsDeleting(false) 
+        setDeleteModal({ isOpen: false, entryId: null, farmerId: null })
+      }
+    }
+  }
+
+  const router = useRouter()
+  const [isNavigating, startNavigation] = useTransition()
+  const [navigatingId, setNavigatingId] = useState<string | null>(null)
+
+  const handleEditNavigation = (farmerId: string, entryId: string) => {
+    setNavigatingId(entryId)
+    startNavigation(() => {
+      router.push(`/farmer/${farmerId}/edit-entry/${entryId}`)
+    })
+  }
+
+  const filteredEntries = initialEntries.filter((entry) => {
+    // 1. Apply Type Filter
+    if (filterType === 'Debit' && Number(entry.debit) === 0) return false
+    if (filterType === 'Credit' && Number(entry.credit) === 0) return false
+
+    // 2. Apply Search Filter
+    if (searchQuery === '') return true
+
+    const query = searchQuery.toLowerCase()
+    const detailMatch = (entry.detail || '').toLowerCase().includes(query)
+    const refMatch = (entry.reference || '').toLowerCase().includes(query)
+    const pageMatch = (entry.page_no || '').toLowerCase().includes(query)
+
+    // Format date to match typical search patterns
+    const dateStr = new Date(entry.entry_date).toLocaleDateString()
+    const dateMatch = dateStr.includes(query)
+
+    return detailMatch || refMatch || pageMatch || dateMatch
+  })
+
+  return (
+    <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
+
+      {/* Search and Filters */}
+      <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
+        <div className="relative mb-4">
+          <Search size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search detail, ref, date, pg..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#F7F8FA] pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#131924] text-sm"
+          />
+          {searchQuery !== '' && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#131924] transition-colors"
+              title="Clear search"
+            >
+              <X size={16} strokeWidth={2} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterType('All')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
+              filterType === 'All'
+                ? 'bg-[#6B7280] text-white border-[#6B7280]'
+                : 'bg-[#F7F8FA] text-[#6B7280] border-[#E5E7EB] hover:border-[#6B7280]'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilterType('Debit')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
+              filterType === 'Debit'
+                ? 'bg-[#DC2626] text-white border-[#DC2626]'
+                : 'bg-[#F7F8FA] text-[#DC2626] border-[#E5E7EB] hover:border-[#DC2626]'
+            }`}
+          >
+            Debit
+          </button>
+          <button
+            onClick={() => setFilterType('Credit')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors border ${
+              filterType === 'Credit'
+                ? 'bg-[#16A34A] text-white border-[#16A34A]'
+                : 'bg-[#F7F8FA] text-[#16A34A] border-[#E5E7EB] hover:border-[#16A34A]'
+            }`}
+          >
+            Credit
+          </button>
+        </div>
+      </div>
+
+      {/* Empty state */}
+      {filteredEntries.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
+          <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
+            <Receipt size={24} strokeWidth={1.75} />
+          </div>
+          <p className="text-base font-medium text-gray-700">No entries match your search</p>
+          <p className="text-sm text-gray-400 mt-1">Try clearing the search or filter.</p>
+        </div>
+      ) : (
+        <>
+          {/* Full table for all screen sizes */}
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+            <div className="overflow-x-auto thin-scrollbar">
+              <table className="w-full text-left border-collapse min-w-[760px]">
+               <thead>
+                 <tr className="bg-[#F7F8FA] border-b border-[#E5E7EB] text-[#6B7280] text-[11px] uppercase tracking-wider divide-x divide-[#E5E7EB]">
+                    <th className="px-4 py-3 font-semibold whitespace-nowrap">Date</th>
+                    <th className="px-4 py-3 font-semibold">Pg</th>
+                    <th className="px-4 py-3 font-semibold">Detail</th>
+                    <th className="px-4 py-3 font-semibold">Ref</th>
+                    <th className="px-4 py-3 font-semibold text-right">Debit</th>
+                    <th className="px-4 py-3 font-semibold text-right">Credit</th>
+                    <th className="px-4 py-3 font-semibold text-right">Balance</th>
+                    <th className="px-4 py-3 font-semibold text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E7EB]">
+                  {filteredEntries.map((entry) => {
+                    return (
+                      <tr key={entry.id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
+                      {/* Date */}
+                        <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap tnum">
+                          {new Date(entry.entry_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' })}
+                        </td>
+
+                      {/* Page No */}
+                      <td className="px-4 py-3 text-sm text-gray-500">
+                        {entry.page_no || '-'}
+                      </td>
+
+                      {/* Detail */}
+                      <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] max-w-[300px] whitespace-pre-wrap break-words">
+                        {entry.detail || '-'}
+                      </td>
+
+                      {/* Reference */}
+                      <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate" title={entry.reference}>
+                        {entry.reference || '-'}
+                      </td>
+
+                      {/* Debit */}
+                      <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">
+                        {Number(entry.debit) > 0 ? `${entry.debit}` : ''}
+                      </td>
+
+                      {/* Credit */}
+                      <td className="px-4 py-3 text-sm text-right font-semibold text-[#16A34A] tnum whitespace-nowrap">
+                        {Number(entry.credit) > 0 ? `${entry.credit}` : ''}
+                      </td>
+
+                      {/* Running Balance */}
+                      <td className="px-4 py-3 text-sm text-right whitespace-nowrap">
+                        <span
+                          className={`font-bold tnum ${
+                            entry.runningBalance < 0
+                              ? 'text-[#16A34A]'
+                              : entry.runningBalance > 0
+                              ? 'text-[#DC2626]'
+                              : 'text-gray-900'
+                          }`}
+                        >
+                          {entry.runningBalance > 0
+                            ? 'Debit '
+                            : entry.runningBalance < 0
+                            ? 'Credit '
+                            : ''}
+                        </span>
+
+                        <span
+                          className={`font-bold tnum ${
+                            entry.runningBalance < 0
+                              ? 'text-[#16A34A]'
+                              : entry.runningBalance > 0
+                              ? 'text-[#DC2626]'
+                              : 'text-gray-900'
+                          }`}
+                        >
+                          {entry.runningBalance === 0
+                            ? '0'
+                            : Math.abs(entry.runningBalance)}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-4 py-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            onClick={() => handleEditNavigation(entry.farmer_id, entry.id)}
+                            disabled={isNavigating && navigatingId === entry.id}
+                            className="text-gray-400 hover:text-[#131924] transition-colors p-1.5 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+                            title="Edit Entry"
+                          >
+                            {isNavigating && navigatingId === entry.id ? (
+                              <Loader2 size={15} strokeWidth={2} className="animate-spin text-[#131924]" />
+                            ) : (
+                              <Pencil size={15} strokeWidth={2} />
+                            )}
+                          </button>
+
+                          <button
+                            onClick={() => setDeleteModal({ isOpen: true, entryId: entry.id, farmerId: entry.farmer_id })}
+                            className="text-gray-400 hover:text-[#DC2626] transition-colors p-1.5 rounded-lg hover:bg-red-50"
+                            title="Delete Entry"
+                          >
+                            <Trash2 size={15} strokeWidth={2} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
+     <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, entryId: null, farmerId: null })}
+        onConfirm={handleConfirmDelete}
+        title="Delete Transaction"
+        description="Are you sure you want to delete this transaction? The running balance will be automatically recalculated."
+        confirmText="Delete Entry"
+        isDestructive={true}
+        isLoading={isDeleting}
+      />
+    </div>
+  )
+}
+</file>
+
+<file path="app/farmer/[id]/page.tsx">
+import { createClient } from '@/utils/supabase/server'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import LedgerClient from './LedgerClient'
+import { toggleFarmerStatus, deleteFarmer } from '@/app/actions'
+import DeleteFarmerButton from './DeleteFarmerButton'
+import { ArrowLeft, Plus, User, Phone, MapPin, Handshake, Pencil, IdCard, Wheat, StickyNote } from 'lucide-react'
+import ToggleStatusButton from './ToggleStatusButton'
+
+
+export default async function FarmerLedger({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  // Fetch farmer details
+  const { data: farmer, error: farmerError } = await supabase
+    .from('farmers')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (farmerError || !farmer) {
+    notFound()
+  }
+
+// Fetch ledger entries
+  const { data: entries, error: entriesError } = await supabase
+    .from('ledger_entries')
+    .select('*')
+    .eq('farmer_id', id)
+    .order('entry_date', { ascending: true })
+    .order('created_at', { ascending: true }) 
+
+  if (entriesError) {
+    return <div className="p-8 text-red-600">Error loading ledger entries.</div>
+  }
+
+// Calculate running balance and reverse for display (newest first)
+  let currentBalance = 0
+  const processedEntries = entries.map((entry) => {
+    const debit = Number(entry.debit) || 0
+    const credit = Number(entry.credit) || 0
+    
+    // Use Math.round to safely handle JS float quirks up to 2 decimals
+    currentBalance = Math.round((currentBalance + debit - credit) * 100) / 100
+    
+    return {
+      ...entry,
+      runningBalance: currentBalance,
+    }
+  }).reverse()
+
+  const toggleStatus = toggleFarmerStatus.bind(null, farmer.id, farmer.status)
+  const deleteAccount = deleteFarmer.bind(null, farmer.id)
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
+      {/* Top Header */}
+<div className="bg-[#131924] w-full safe-top">
+  <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-6">
+
+{/* Row 1: Back + Actions */}
+    <div className="flex items-center justify-between mb-6">
+      <Link
+        href="/"
+        className="text-white/80 hover:text-white transition-opacity p-1 -ml-1"
+        title="Back to Dashboard"
+      >
+        <ArrowLeft size={22} strokeWidth={2.25} />
+      </Link>
+
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* ADD THIS EDIT LINK */}
+        <Link 
+          href={`/farmer/${farmer.id}/edit`} 
+          className="text-white/80 hover:text-white p-2 sm:px-3 sm:py-2 flex items-center justify-center transition-colors rounded-lg hover:bg-white/10"
+          title="Edit Farmer"
+        >
+          <Pencil size={18} strokeWidth={2.25} />
+          <span className="hidden md:inline ml-2 text-sm font-medium">Edit</span>
+        </Link>
+        <div className="w-px h-4 bg-white/20 hidden sm:block" />
+        
+        <form action={toggleStatus}>
+          <ToggleStatusButton currentStatus={farmer.status} />
+        </form>
+        <div className="w-px h-4 bg-white/20" />
+        <form action={deleteAccount}>
+          <DeleteFarmerButton />
+        </form>
+      </div>
+    </div>
+
+    {/* Row 2: Farmer info (left) + Balance/Add Entry (right) */}
+    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+      <div className="min-w-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 truncate">
+          {farmer.name}
+        </h1>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-white/60">
+          {farmer.father_name && (
+            <p className="flex items-center gap-1.5">
+              <User size={14} strokeWidth={2} /> S/O {farmer.father_name}
+            </p>
+          )}
+          {farmer.phone && (
+            <p className="flex items-center gap-1.5">
+              <Phone size={14} strokeWidth={2} /> {farmer.phone}
+            </p>
+          )}
+          {farmer.area && (
+            <p className="flex items-center gap-1.5">
+              <MapPin size={14} strokeWidth={2} /> {farmer.area}
+            </p>
+          )}
+          {farmer.reference_person && (
+            <p className="flex items-center gap-1.5">
+              <Handshake size={14} strokeWidth={2} /> Ref: {farmer.reference_person}
+            </p>
+          )}
+          {farmer.cnic && (
+            <p className="flex items-center gap-1.5">
+              <IdCard size={14} strokeWidth={2} /> {farmer.cnic}
+            </p>
+          )}
+          {farmer.crop && (
+            <p className="flex items-center gap-1.5">
+              <Wheat size={14} strokeWidth={2} /> {farmer.crop}
+            </p>
+          )}
+          {farmer.note && (
+          <div className="mt-4 flex items-start gap-2.5 text-sm text-white/80 bg-white/10 p-3.5 rounded-xl border border-white/10 w-full max-w-xl">
+            <StickyNote size={18} strokeWidth={2} className="shrink-0 mt-0.5 text-white/60" />
+            <p className="leading-relaxed whitespace-pre-wrap">{farmer.note}</p>
+          </div>
+        )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
+        <div className="text-left sm:text-right">
+          <p className="text-white/50 text-[11px] uppercase tracking-wider mb-0.5">
+            Current Balance
+          </p>
+          <p className={`text-xl sm:text-2xl font-bold tnum whitespace-nowrap ${
+            currentBalance < 0 ? 'text-[#6EE7A8]' : currentBalance > 0 ? 'text-[#FCA5A5]' : 'text-white'
+          }`}>
+            {currentBalance === 0
+              ? '0'
+              : currentBalance > 0
+                ? `Debit ${currentBalance}`
+                : `Credit ${Math.abs(currentBalance)}`}
+          </p>
+        </div>
+
+        {farmer.status === 'Active' && (
+          <Link
+            href={`/farmer/${id}/add-entry`}
+            className="bg-white text-[#131924] w-11 h-11 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 rounded-full sm:rounded-xl font-bold text-sm hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-sm"
+          >
+            <Plus size={20} strokeWidth={2.5} className="sm:hidden" />
+            <Plus size={16} strokeWidth={2.5} className="hidden sm:block" />
+            <span className="hidden sm:inline">Add Entry</span>
+          </Link>
+        )}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+      <LedgerClient initialEntries={processedEntries} />
+    </main>
+  )
+}
+</file>
+
+<file path="app/actions.ts">
+'use server'
+
+import { createClient } from '@/utils/supabase/server'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+export async function addFarmer(formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase.from('farmers').insert({
+    name: formData.get('name') as string,
+    father_name: (formData.get('father_name') as string) || null,
+    area: (formData.get('area') as string) || null,
+    phone: (formData.get('phone') as string) || null,
+    reference_person: (formData.get('reference_person') as string) || null,
+    cnic: (formData.get('cnic') as string) || null, 
+    crop: (formData.get('crop') as string) || null,
+    note: (formData.get('note') as string) || null,
+    status: 'Active',
+  }).select().single()
+
+  if (error) {
+    console.error('Error adding farmer:', error)
+    throw new Error('Failed to add farmer')
+  }
+
+  // Refresh the dashboard and redirect to the new farmer's ledger
+  revalidatePath('/')
+  redirect(`/farmer/${data.id}`)
+}
+
+export async function addLedgerEntry(farmerId: string, formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const type = formData.get('type') as string // 'debit' or 'credit'
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const isDebit = type === 'Debit'
+
+  const { error } = await supabase.from('ledger_entries').insert({
+    farmer_id: farmerId,
+    debit: isDebit ? amount : 0,
+    credit: isDebit ? 0 : amount,
+    page_no: (formData.get('page_no') as string) || null,
+    detail: (formData.get('detail') as string) || null,
+    reference: (formData.get('reference') as string) || null,
+    entry_date: (formData.get('entry_date') as string) || new Date().toISOString().split('T')[0],
+  })
+
+  if (error) {
+    console.error('Error adding entry:', error)
+    throw new Error('Failed to add entry')
+  }
+
+  // Refresh the ledger page and redirect back to it
+  revalidatePath(`/farmer/${farmerId}`)
+  redirect(`/farmer/${farmerId}`)
+}
+export async function signOut() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  await supabase.auth.signOut()
+  redirect('/login')
+}
+export async function deleteLedgerEntry(entryId: string, farmerId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  
+  const { error } = await supabase
+    .from('ledger_entries')
+    .delete()
+    .eq('id', entryId)
+
+  if (error) {
+    console.error('Error deleting entry:', error)
+    throw new Error('Failed to delete entry')
+  }
+
+  // Refresh the ledger page to show the updated running balance
+  revalidatePath(`/farmer/${farmerId}`)
+}
+
+export async function toggleFarmerStatus(farmerId: string, currentStatus: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  const newStatus = currentStatus === 'Active' ? 'Closed' : 'Active'
+  
+  const { error } = await supabase
+    .from('farmers')
+    .update({ status: newStatus })
+    .eq('id', farmerId)
+
+  if (error) {
+    console.error('Error updating status:', error)
+    throw new Error('Failed to update status')
+  }
+
+  // Refresh both the specific ledger page and the main dashboard
+  revalidatePath(`/farmer/${farmerId}`)
+  revalidatePath('/')
+}
+
+export async function changePassword(formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  
+  const oldPassword = formData.get('oldPassword') as string
+  const newPassword = formData.get('newPassword') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+
+  if (newPassword !== confirmPassword) {
+    return redirect('/settings?error=Passwords do not match')
+  }
+
+  // Get current user to verify their email
+  const { data } = await supabase.auth.getUser()
+  if (!data.user) throw new Error('Unauthorized')
+
+  // Verify the old password is correct
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: data.user.email!, 
+    password: oldPassword,
+  })
+
+  if (signInError) {
+    return redirect('/settings?error=Old password is incorrect')
+  }
+
+  // Set the new password
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  })
+
+  if (updateError) {
+    return redirect(`/settings?error=${updateError.message}`)
+  }
+
+  return redirect('/settings?success=Password updated successfully')
+}
+
+export async function editLedgerEntry(entryId: string, farmerId: string, formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const type = formData.get('type') as string // 'Debit' or 'Credit'
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const isDebit = type === 'Debit'
+
+  const { error } = await supabase
+    .from('ledger_entries')
+    .update({
+      debit: isDebit ? amount : 0,
+      credit: isDebit ? 0 : amount,
+      page_no: (formData.get('page_no') as string) || null,
+      detail: (formData.get('detail') as string) || null,
+      reference: (formData.get('reference') as string) || null,
+      entry_date: (formData.get('entry_date') as string) || new Date().toISOString().split('T')[0],
+    })
+    .eq('id', entryId)
+
+  if (error) {
+    console.error('Error updating entry:', error)
+    throw new Error('Failed to update entry')
+  }
+
+  // Refresh the ledger page and redirect back to it
+  revalidatePath(`/farmer/${farmerId}`)
+  redirect(`/farmer/${farmerId}`)
+}
+export async function deleteFarmer(farmerId: string) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  
+  // First, delete all ledger entries associated with this farmer
+  const { error: entriesError } = await supabase
+    .from('ledger_entries')
+    .delete()
+    .eq('farmer_id', farmerId)
+
+  if (entriesError) {
+    console.error('Error deleting ledger entries:', entriesError)
+    throw new Error('Failed to delete ledger entries')
+  }
+
+  // Then, delete the farmer account
+  const { error: farmerError } = await supabase
+    .from('farmers')
+    .delete()
+    .eq('id', farmerId)
+
+  if (farmerError) {
+    console.error('Error deleting farmer:', farmerError)
+    throw new Error('Failed to delete farmer')
+  }
+
+  // Refresh the main dashboard and redirect to it
+  revalidatePath('/')
+  redirect('/')
+}
+export async function editFarmer(farmerId: string, formData: FormData) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { error } = await supabase.from('farmers').update({
+    name: formData.get('name') as string,
+    father_name: (formData.get('father_name') as string) || null,
+    area: (formData.get('area') as string) || null,
+    phone: (formData.get('phone') as string) || null,
+    reference_person: (formData.get('reference_person') as string) || null,
+    cnic: (formData.get('cnic') as string) || null, 
+    crop: (formData.get('crop') as string) || null, 
+    note: (formData.get('note') as string) || null,
+  }).eq('id', farmerId)
+
+  if (error) {
+    console.error('Error updating farmer:', error)
+    throw new Error('Failed to update farmer')
+  }
+
+  // Refresh the dashboard and redirect to the farmer's ledger
+  revalidatePath('/')
+  revalidatePath(`/farmer/${farmerId}`)
+  redirect(`/farmer/${farmerId}`)
+}
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import NextTopLoader from 'nextjs-toploader';
+import { AutoLogout } from '@/components/AutoLogout'; 
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: 'ADMN',
+  description: 'Your shop description',
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#131924",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        {/* Progress bar */}
+        <NextTopLoader 
+          color="#131924"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #131924,0 0 5px #131924"
+          zIndex={1600}
+        />
+        
+        <AutoLogout />
+        
+        {children}
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="app/page.tsx">
+import { createClient } from '@/utils/supabase/server'
+import Link from 'next/link'
+import DashboardClient from './DashboardClient'
+import { signOut } from './actions'
+import Image from 'next/image'
+import { Settings, Plus } from 'lucide-react'
+import { LogoutButton } from '@/components/LogoutButton'
+
+export default async function Home() {
+  const supabase = await createClient()
+
+  // Fetch farmers and ledger entries to calculate stats
+  const [ { data: farmers }, { data: entries } ] = await Promise.all([
+    supabase.from('farmers').select('*').order('name', { ascending: true }),
+    supabase.from('ledger_entries').select('farmer_id, debit, credit')
+  ])
+
+  // Calculate Dashboard Stats
+  const activeCount = farmers?.filter(f => f.status === 'Active').length || 0
+  const closedCount = farmers?.filter(f => f.status === 'Closed').length || 0
+
+  const activeIds = new Set(farmers?.filter(f => f.status === 'Active').map(f => f.id))
+  let netBalance = 0
+  entries?.forEach(e => {
+    if (activeIds.has(e.farmer_id)) {
+      netBalance += (Number(e.debit) || 0) - (Number(e.credit) || 0)
+    }
+  })
+
+  const balanceLabel = netBalance === 0
+    ? 'Settled'
+    : netBalance > 0
+      ? `${netBalance.toFixed(0)}`
+      : `${Math.abs(netBalance).toFixed(0)}`
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
+      {/* Top Bar */}
+      <div className="bg-[#131924] w-full safe-top">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex justify-between items-center text-white">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center shadow-inner overflow-hidden bg-[#2A313C]">
+              <Image
+                src="/icon.png"
+                alt="App Logo"
+                width={40}
+                height={40}
+                className="object-contain w-full h-full"
+              />
+            </div>
+            <span className="font-semibold text-[13px] sm:text-sm truncate">Commission Shop Ledger</span>
+          </div>
+
+          <div className="flex items-center gap-4 sm:gap-5 shrink-0">
+            <Link href="/settings" className="text-white/90 hover:text-white transition-colors" title="Settings">
+              <Settings size={21} strokeWidth={2} />
+            </Link>
+
+            <form action={signOut}>
+              <LogoutButton />
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Stats Row */}
+        <div className="flex gap-3 mb-6">
+          {/* Active Block - Takes only needed space */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm shrink-0 min-w-[72px] text-center">
+            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{activeCount}</p>
+            <p className="text-xs text-gray-500 font-medium mt-1">Active</p>
+          </div>
+          
+          {/* Closed Block - Takes only needed space */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm shrink-0 min-w-[72px] text-center">
+            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{closedCount}</p>
+            <p className="text-xs text-gray-500 font-medium mt-1">Closed</p>
+          </div>
+          
+          {/* Outstanding Block - Takes all remaining space */}
+          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm flex-1 min-w-0 text-center">
+            <p className={`text-base sm:text-lg font-bold truncate tnum ${
+              netBalance > 0 
+                ? 'text-[#DC2626]' // Red for Debit
+                : netBalance < 0 
+                ? 'text-[#16A34A]' // Green for Credit
+                : 'text-gray-900'
+            }`}>
+              {balanceLabel}
+              {/* Optional: Add a small Dr/Cr label next to the number on the dashboard */}
+              {netBalance !== 0 && (
+                <span className="text-[10px] sm:text-xs ml-1 opacity-75">
+                  {netBalance > 0 ? '' : ''}
+                </span>
+              )}
+            </p>
+            <p className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1">Outstanding</p>
+          </div>
+        </div>
+
+        {/* Client Component (Search, Filters, and List) */}
+        <DashboardClient initialFarmers={farmers || []} />
+      </div>
+
+      {/* Floating Action Button (FAB) */}
+      <Link
+        href="/add-farmer"
+        className="fixed fab-safe-bottom right-5 sm:right-8 w-14 h-14 sm:w-16 sm:h-16 bg-[#131924] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-gray-800 active:scale-95 transition-all z-50"
+        title="Add farmer"
+      >
+        <Plus size={26} strokeWidth={2.5} />
+      </Link>
+    </main>
+  )
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "admn-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.8",
+    "lucide-react": "^1.26.0",
+    "next": "16.2.11",
+    "nextjs-toploader": "^3.9.17",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.11",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="app/login/page.tsx">
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+import Image from 'next/image'
+import { Mail } from 'lucide-react'
+import PasswordInput from './PasswordInput'
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ message: string }>
+}) {
+  const { message } = await searchParams
+
+  const signIn = async (formData: FormData) => {
+    'use server'
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const supabase = await createClient()
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      return redirect('/login?message=Invalid email or password')
+    }
+
+    return redirect('/')
+  }
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#F7F8FA] p-5 sm:p-6">
+      <div className="w-full max-w-md bg-white rounded-2xl sm:rounded-3xl shadow-[0_6px_16px_rgba(0,0,0,0.04)] border border-[#E5E7EB] p-6 sm:p-8">
+
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center mb-5 overflow-hidden bg-[#131924]">
+            <Image
+              src="/icon.png"
+              alt="App Logo"
+              width={96}
+              height={96}
+              className="object-contain w-full h-full"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-[#131924] tracking-wider">ADMN</h1>
+          <p className="text-sm text-[#6B7280] mt-1">Commission Shop Ledger</p>
+        </div>
+
+        <form action={signIn} className="flex flex-col gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email / ID</label>
+            <div className="relative">
+              <Mail size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
+              <input
+                id="email"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:border-[#131924] focus:ring-1 focus:ring-[#131924] bg-white text-black"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
+            {/* Add the name="password" prop here */}
+            <PasswordInput name="password" />
+          </div>
+
+          <SubmitButton>Log In</SubmitButton>
+
+          {message && (
+            <p className="mt-4 text-center text-red-600 text-sm font-medium">
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="app/settings/page.tsx">
+import { changePassword } from '@/app/actions'
+import Link from 'next/link'
+import { ArrowLeft, KeyRound } from 'lucide-react'
+import PasswordInput from '@/app/login/PasswordInput'
+import SettingsForm from './SettingsForm' 
+import { SubmitButton } from '@/components/SubmitButton'
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string }>
+}) {
+  const { error, success } = await searchParams
+
+  return (
+    <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
+      {/* Top Header */}
+      <div className="bg-[#131924] w-full safe-top px-4 sm:px-6 py-6 sm:py-8 pb-12 sm:pb-14">
+        <div className="max-w-2xl mx-auto w-full">
+          <Link
+            href="/"
+            className="text-white opacity-80 hover:opacity-100 transition-opacity px-1 py-5 -ml-1 inline-block"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft size={24} strokeWidth={2.25} />
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Settings</h1>
+        </div>
+      </div>
+
+      {/* Settings Card */}
+      <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-2xl mx-auto w-full -mt-6 sm:-mt-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] shadow-sm p-5 sm:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-[#131924]/5 p-2 rounded-lg">
+              <KeyRound size={20} strokeWidth={2} className="text-[#131924]" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Change Password</h2>
+          </div>
+
+          {/* Using the imported SettingsForm here */}
+          <SettingsForm action={changePassword}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Old Password</label>
+              <PasswordInput name="oldPassword" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <PasswordInput name="newPassword" minLength={6} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+              <PasswordInput name="confirmPassword" minLength={6} />
+            </div>
+
+            {error && <div className="p-3 bg-red-50 text-red-700 rounded-xl text-sm font-medium border border-red-100">{error}</div>}
+            {success && <div className="p-3 bg-green-50 text-green-700 rounded-xl text-sm font-medium border border-green-100">{success}</div>}
+
+            <SubmitButton>Update Password</SubmitButton>
+          </SettingsForm>
+        </div>
+      </div>
+    </main>
+  )
+}
+</file>
+
+<file path="public/manifest.json">
+{
+  "name": "ADMN",
+  "short_name": "ADMN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131924",
+  "theme_color": "#131924",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}
+</file>
+
+</files>
