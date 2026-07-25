@@ -80,3 +80,82 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Print-only elements: hidden on screen, shown when printing */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  html, body {
+    background: white !important;
+  }
+
+  main {
+    background: white !important;
+  }
+
+  .thin-scrollbar {
+    overflow: visible !important;
+  }
+
+  /* Crisper, denser table for print */
+  table {
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 11px;
+    border: 1px solid #D1D5DB !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #E5E7EB !important;
+    padding: 6px 10px !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  thead tr {
+    background: #F3F4F6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  /* Flatten rounded cards/shadows — they read as UI chrome, not a document */
+  .shadow-sm, .shadow-md, .shadow-lg {
+    box-shadow: none !important;
+  }
+  .rounded-2xl, .rounded-xl, .rounded-3xl {
+    border-radius: 0 !important;
+  }
+
+  /* Keep the red/green debit-credit colors when printing to a real printer */
+  .text-\[\#DC2626\], .text-\[\#FCA5A5\] {
+    color: #B91C1C !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .text-\[\#16A34A\], .text-\[\#6EE7A8\] {
+    color: #15803D !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    margin: 14mm 12mm;
+  }
+}

@@ -80,7 +80,7 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
     <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
 
       {/* Search and Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
+      <div className="no-print bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
         <div className="relative mb-4">
           <Search size={17} strokeWidth={2} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
           <input
@@ -159,11 +159,16 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                     <th className="px-4 py-3 font-semibold text-right">Debit</th>
                     <th className="px-4 py-3 font-semibold text-right">Credit</th>
                     <th className="px-4 py-3 font-semibold text-right">Balance</th>
-                    <th className="px-4 py-3 font-semibold text-center">Actions</th>
+                    <th className="px-4 py-3 font-semibold text-center no-print">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E5E7EB]">
                   {filteredEntries.map((entry) => {
+                    // NEW: Pre-format the values for the row
+                    const formattedDebit = Number(entry.debit) > 0 ? new Intl.NumberFormat('en-PK').format(entry.debit) : ''
+                    const formattedCredit = Number(entry.credit) > 0 ? new Intl.NumberFormat('en-PK').format(entry.credit) : ''
+                    const formattedRunningBalance = entry.runningBalance === 0 ? '0' : new Intl.NumberFormat('en-PK').format(Math.abs(entry.runningBalance))
+
                     return (
                       <tr key={entry.id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
                       {/* Date */}
@@ -173,27 +178,27 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
 
                       {/* Page No */}
                       <td className="px-4 py-3 text-sm text-gray-500">
-                        {entry.page_no || '-'}
+                        {entry.page_no || ''}
                       </td>
 
                       {/* Detail */}
                       <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] max-w-[300px] whitespace-pre-wrap break-words">
-                        {entry.detail || '-'}
+                        {entry.detail || ''}
                       </td>
 
                       {/* Reference */}
                       <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate" title={entry.reference}>
-                        {entry.reference || '-'}
+                        {entry.reference || ''}
                       </td>
 
                       {/* Debit */}
                       <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">
-                        {Number(entry.debit) > 0 ? `${entry.debit}` : ''}
+                        {formattedDebit}
                       </td>
 
                       {/* Credit */}
                       <td className="px-4 py-3 text-sm text-right font-semibold text-[#16A34A] tnum whitespace-nowrap">
-                        {Number(entry.credit) > 0 ? `${entry.credit}` : ''}
+                        {formattedCredit}
                       </td>
 
                       {/* Running Balance */}
@@ -223,14 +228,12 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                               : 'text-gray-900'
                           }`}
                         >
-                          {entry.runningBalance === 0
-                            ? '0'
-                            : Math.abs(entry.runningBalance)}
+                          {formattedRunningBalance}
                         </span>
                       </td>
 
                       {/* Actions */}
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-4 py-3 text-center no-print">
                         <div className="flex items-center justify-center gap-1">
                           <button
                             onClick={() => handleEditNavigation(entry.farmer_id, entry.id)}

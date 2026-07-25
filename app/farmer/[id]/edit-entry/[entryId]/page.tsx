@@ -65,7 +65,7 @@ export default async function EditEntryPage({
                 name="entry_date"
                 type="date"
                 required
-                defaultValue={new Date(entry.entry_date).toISOString().split('T')[0]}
+                defaultValue={entry.entry_date}
                 className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
               />
             </div>
@@ -105,7 +105,7 @@ export default async function EditEntryPage({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Detail</label>
             <textarea
               name="detail"
               rows={3}

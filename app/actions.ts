@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
 export async function addFarmer(formData: FormData) {
   const supabase = await createClient()
@@ -237,4 +238,87 @@ export async function editFarmer(farmerId: string, formData: FormData) {
   revalidatePath('/')
   revalidatePath(`/farmer/${farmerId}`)
   redirect(`/farmer/${farmerId}`)
+}
+export async function exportData() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  // Fetch absolutely everything from both tables
+  const { data: farmers } = await supabase.from('farmers').select('*')
+  const { data: entries } = await supabase.from('ledger_entries').select('*')
+
+  // Return a tightly packed JSON string
+  return JSON.stringify({ 
+    version: 1, 
+    timestamp: new Date().toISOString(),
+    farmers, 
+    entries 
+  })
+}
+
+export async function importData(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const file = formData.get('backupFile') as File
+  if (!file) return redirect('/settings?error=No file selected')
+
+  try {
+    const fileContents = await file.text()
+    const data = JSON.parse(fileContents)
+
+    // Using { onConflict: 'id' } guarantees no duplicates. 
+    // If the ID exists, it updates the record. If it's new, it inserts it.
+    if (data.farmers && data.farmers.length > 0) {
+      const { error: farmerError } = await supabase
+        .from('farmers')
+        .upsert(data.farmers, { onConflict: 'id' })
+      if (farmerError) throw farmerError
+    }
+
+    if (data.entries && data.entries.length > 0) {
+      const { error: entryError } = await supabase
+        .from('ledger_entries')
+        .upsert(data.entries, { onConflict: 'id' })
+      if (entryError) throw entryError
+    }
+  } catch (err) {
+    console.error('Import error:', err)
+    return redirect('/settings?error=Invalid backup file or import failed')
+  }
+
+  revalidatePath('/')
+  redirect('/settings?success=Data restored successfully without duplicates')
+}
+
+export async function deleteAllData() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  // .not('id', 'is', null) is the safest way to target and delete ALL rows in Supabase
+  // We delete entries first to prevent foreign key errors, then the farmers.
+  await supabase.from('ledger_entries').delete().not('id', 'is', null)
+  await supabase.from('farmers').delete().not('id', 'is', null)
+
+  revalidatePath('/')
+  redirect('/settings?success=All data has been permanently deleted')
+}
+export async function setYearFilter(formData: FormData) {
+  // getAll retrieves an array of all checked checkboxes with the name "year"
+  const years = formData.getAll('year') as string[]
+  const cookieStore = await cookies()
+  
+  // If "All" is selected, or if they unchecked everything, default to 'All'
+  if (years.includes('All') || years.length === 0) {
+    cookieStore.set('selected_year', 'All', { path: '/' })
+  } else {
+    // Save as a comma-separated string (e.g., "2024,2025")
+    cookieStore.set('selected_year', years.join(','), { path: '/' })
+  }
+  
+  revalidatePath('/', 'layout')
+  redirect('/settings?success=Financial years updated successfully')
 }

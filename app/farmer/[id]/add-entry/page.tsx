@@ -13,6 +13,16 @@ export default async function AddEntryPage({
   // Bind the farmer ID to the server action so it knows which ledger to update
   const addEntryWithId = addLedgerEntry.bind(null, id)
 
+  const getPKTDate = () => {
+  const date = new Date()
+  const options = { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' } as const
+  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date)
+  const year = parts.find(p => p.type === 'year')?.value
+  const month = parts.find(p => p.type === 'month')?.value
+  const day = parts.find(p => p.type === 'day')?.value
+  return `${year}-${month}-${day}`
+}
+
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
@@ -44,7 +54,13 @@ export default async function AddEntryPage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
-              <input name="entry_date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+              <input 
+                name="entry_date" 
+                type="date" 
+                required 
+                defaultValue={getPKTDate()} 
+                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" 
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
@@ -64,7 +80,7 @@ export default async function AddEntryPage({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Detail (e.g. Wheat, Fertilizer)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Detail</label>
             <textarea 
               name="detail" 
               rows={3}

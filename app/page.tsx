@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 import DashboardClient from './DashboardClient'
 import { signOut } from './actions'
@@ -9,11 +10,43 @@ import { LogoutButton } from '@/components/LogoutButton'
 export default async function Home() {
   const supabase = await createClient()
 
-  // Fetch farmers and ledger entries to calculate stats
+  const cookieStore = await cookies()
+  const rawYear = cookieStore.get('selected_year')?.value
+  const selectedYear = rawYear ? decodeURIComponent(rawYear) : new Date().getFullYear().toString()
+  
+  // Build the query
+  let entriesQuery = supabase.from('ledger_entries').select('farmer_id, debit, credit')
+  
+  if (selectedYear !== 'All') {
+    const yearsArray = selectedYear.split(',')
+    const orConditions = yearsArray
+      .map(y => `and(entry_date.gte.${y.trim()}-01-01,entry_date.lte.${y.trim()}-12-31)`)
+      .join(',')
+    
+    entriesQuery = entriesQuery.or(orConditions)
+  }
+
+  // Fetch farmers and filtered ledger entries
   const [ { data: farmers }, { data: entries } ] = await Promise.all([
     supabase.from('farmers').select('*').order('name', { ascending: true }),
-    supabase.from('ledger_entries').select('farmer_id, debit, credit')
+    entriesQuery
   ])
+
+  // Calculate individual balances per farmer
+  const balanceMap: Record<string, number> = {}
+  entries?.forEach(e => {
+    const current = balanceMap[e.farmer_id] || 0
+    balanceMap[e.farmer_id] = current + (Number(e.debit) || 0) - (Number(e.credit) || 0)
+  })
+
+// Attach balance to each farmer object
+  const farmersWithBalance = farmers?.map(farmer => {
+    const balance = Math.round((balanceMap[farmer.id] || 0) * 100) / 100
+    return {
+      ...farmer,
+      balance,
+    }
+  }) || []
 
   // Calculate Dashboard Stats
   const activeCount = farmers?.filter(f => f.status === 'Active').length || 0
@@ -27,11 +60,10 @@ export default async function Home() {
     }
   })
 
+  // NEW: Format the net balance with commas
   const balanceLabel = netBalance === 0
-    ? 'Settled'
-    : netBalance > 0
-      ? `${netBalance.toFixed(0)}`
-      : `${Math.abs(netBalance).toFixed(0)}`
+    ? '0'
+    : new Intl.NumberFormat('en-PK').format(Math.abs(netBalance))
 
   return (
     <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
@@ -64,43 +96,16 @@ export default async function Home() {
       </div>
 
       <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Stats Row */}
-        <div className="flex gap-3 mb-6">
-          {/* Active Block - Takes only needed space */}
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm shrink-0 min-w-[72px] text-center">
-            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{activeCount}</p>
-            <p className="text-xs text-gray-500 font-medium mt-1">Active</p>
-          </div>
-          
-          {/* Closed Block - Takes only needed space */}
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm shrink-0 min-w-[72px] text-center">
-            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{closedCount}</p>
-            <p className="text-xs text-gray-500 font-medium mt-1">Closed</p>
-          </div>
-          
-          {/* Outstanding Block - Takes all remaining space */}
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] shadow-sm flex-1 min-w-0 text-center">
-            <p className={`text-base sm:text-lg font-bold truncate tnum ${
-              netBalance > 0 
-                ? 'text-[#DC2626]' // Red for Debit
-                : netBalance < 0 
-                ? 'text-[#16A34A]' // Green for Credit
-                : 'text-gray-900'
-            }`}>
-              {balanceLabel}
-              {/* Optional: Add a small Dr/Cr label next to the number on the dashboard */}
-              {netBalance !== 0 && (
-                <span className="text-[10px] sm:text-xs ml-1 opacity-75">
-                  {netBalance > 0 ? '' : ''}
-                </span>
-              )}
-            </p>
-            <p className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1">Outstanding</p>
-          </div>
-        </div>
-
-        {/* Client Component (Search, Filters, and List) */}
-        <DashboardClient initialFarmers={farmers || []} />
+        {/* Pass the stats into the client component */}
+        <DashboardClient 
+          initialFarmers={farmersWithBalance} 
+          stats={{
+            activeCount,
+            closedCount,
+            netBalance,
+            balanceLabel
+          }}
+        />
       </div>
 
       {/* Floating Action Button (FAB) */}
