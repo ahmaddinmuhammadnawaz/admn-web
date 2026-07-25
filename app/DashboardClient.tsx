@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Search, X, MapPin, Phone, ChevronRight, Users, User } from 'lucide-react'
 
 interface DashboardClientProps {
-  initialFarmers: any[]
+  initialaccounts: any[]
   stats: {
     activeCount: number
     closedCount: number
@@ -14,21 +14,21 @@ interface DashboardClientProps {
   }
 }
 
-export default function DashboardClient({ initialFarmers, stats }: DashboardClientProps) {
+export default function DashboardClient({ initialaccounts, stats }: DashboardClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('Active')
 
-  // Filter the farmers based on search query and tab status
-  const filteredFarmers = initialFarmers.filter((farmer) => {
-    if (farmer.status !== statusFilter) return false
+  // Filter the accounts based on search query and tab status
+  const filteredaccounts = initialaccounts.filter((account) => {
+    if (account.status !== statusFilter) return false
     if (searchQuery === '') return true
 
     const query = searchQuery.toLowerCase()
-    const nameMatch = farmer.name.toLowerCase().includes(query)
-    const areaMatch = (farmer.area || '').toLowerCase().includes(query)
-    const phoneMatch = (farmer.phone || '').toLowerCase().includes(query)
-    const refMatch = (farmer.reference_person || '').toLowerCase().includes(query)
-    const fatherMatch = (farmer.father_name || '').toLowerCase().includes(query)
+    const nameMatch = account.name.toLowerCase().includes(query)
+    const areaMatch = (account.area || '').toLowerCase().includes(query)
+    const phoneMatch = (account.phone || '').toLowerCase().includes(query)
+    const refMatch = (account.reference_person || '').toLowerCase().includes(query)
+    const fatherMatch = (account.father_name || '').toLowerCase().includes(query)
 
     return nameMatch || areaMatch || phoneMatch || refMatch || fatherMatch
   })
@@ -97,8 +97,8 @@ export default function DashboardClient({ initialFarmers, stats }: DashboardClie
         </div>
       </div>
 
-      {/* Farmers Grid */}
-      {filteredFarmers.length === 0 ? (
+      {/* accounts Grid */}
+      {filteredaccounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
           <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
             <Users size={24} strokeWidth={1.75} />
@@ -116,22 +116,22 @@ export default function DashboardClient({ initialFarmers, stats }: DashboardClie
             // Instantiate exactly ONCE before the loop for better performance
             const pkrFormatter = new Intl.NumberFormat('en-PK')
             
-            return filteredFarmers.map((farmer) => {
-              const bal = farmer.balance || 0
+            return filteredaccounts.map((account) => {
+              const bal = account.balance || 0
               const formattedBal = pkrFormatter.format(Math.abs(bal))
               
               return (
-                <Link href={`/farmer/${farmer.id}`} key={farmer.id} className="block group">
+                <Link href={`/account/${account.id}`} key={account.id} className="block group">
                   <div className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-sm group-hover:border-[#131924] group-hover:shadow-md transition-all h-full flex flex-col justify-between gap-4">
                     
                     {/* Top: Name & Balance */}
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h2 className="font-bold text-lg text-gray-800 truncate">{farmer.name}</h2>
-                        {farmer.father_name && (
+                        <h2 className="font-bold text-lg text-gray-800 truncate">{account.name}</h2>
+                        {account.father_name && (
                           <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1 truncate">
                             <User size={12} strokeWidth={2} className="shrink-0" />
-                            S/O {farmer.father_name}
+                            S/O {account.father_name}
                           </p>
                         )}
                       </div>
@@ -155,12 +155,12 @@ export default function DashboardClient({ initialFarmers, stats }: DashboardClie
                       <div className="flex items-center gap-3 truncate">
                         <span className="flex items-center gap-1 truncate">
                           <MapPin size={12} strokeWidth={2} className="shrink-0" />
-                          {farmer.area || 'No location'}
+                          {account.area || 'No location'}
                         </span>
-                        {farmer.phone && (
+                        {account.phone && (
                           <span className="flex items-center gap-1 truncate">
                             <Phone size={12} strokeWidth={2} className="shrink-0" />
-                            {farmer.phone}
+                            {account.phone}
                           </span>
                         )}
                       </div>

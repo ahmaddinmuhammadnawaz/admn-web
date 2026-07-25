@@ -40,7 +40,7 @@ export default function HistoryLoading() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="flex items-center px-5 py-5 border-b border-[#E5E7EB] gap-4">
               
-              {/* Farmer Name (40%) */}
+              {/* account Name (40%) */}
               <div className="w-[40%]">
                 <div className="h-4 w-32 sm:w-48 bg-gray-200 rounded animate-pulse"></div>
               </div>

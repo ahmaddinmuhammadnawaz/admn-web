@@ -1,4 +1,4 @@
-export default function FarmerLedgerLoading() {
+export default function accountLedgerLoading() {
   return (
     <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
       {/* Top Header Skeleton */}
@@ -18,7 +18,7 @@ export default function FarmerLedgerLoading() {
             </div>
           </div>
 
-          {/* Row 2: Farmer info (left) + Balance (right) */}
+          {/* Row 2: account info (left) + Balance (right) */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div className="min-w-0 flex-1 w-full">
               <div className="h-8 w-48 sm:w-64 bg-white/10 rounded-lg animate-pulse mb-4"></div>

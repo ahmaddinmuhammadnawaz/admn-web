@@ -5,13 +5,13 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
-export async function addFarmer(formData: FormData) {
+export async function addaccount(formData: FormData) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase.from('farmers').insert({
+  const { data, error } = await supabase.from('accounts').insert({
     name: formData.get('name') as string,
     father_name: (formData.get('father_name') as string) || null,
     area: (formData.get('area') as string) || null,
@@ -28,12 +28,12 @@ export async function addFarmer(formData: FormData) {
     throw new Error('Failed to add Page')
   }
 
-  // Refresh the dashboard and redirect to the new farmer's ledger
+  // Refresh the dashboard and redirect to the new account's ledger
   revalidatePath('/')
-  redirect(`/farmer/${data.id}`)
+  redirect(`/account/${data.id}`)
 }
 
-export async function addLedgerEntry(farmerId: string, formData: FormData) {
+export async function addLedgerEntry(accountId: string, formData: FormData) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -44,7 +44,7 @@ export async function addLedgerEntry(farmerId: string, formData: FormData) {
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('ledger_entries').insert({
-    farmer_id: farmerId,
+    account_id: accountId,
     debit: isDebit ? amount : 0,
     credit: isDebit ? 0 : amount,
     page_no: (formData.get('page_no') as string) || null,
@@ -59,8 +59,8 @@ export async function addLedgerEntry(farmerId: string, formData: FormData) {
   }
 
   // Refresh the ledger page and redirect back to it
-  revalidatePath(`/farmer/${farmerId}`)
-  redirect(`/farmer/${farmerId}`)
+  revalidatePath(`/account/${accountId}`)
+  redirect(`/account/${accountId}`)
 }
 export async function signOut() {
   const supabase = await createClient()
@@ -69,7 +69,7 @@ export async function signOut() {
   await supabase.auth.signOut()
   redirect('/login')
 }
-export async function deleteLedgerEntry(entryId: string, farmerId: string) {
+export async function deleteLedgerEntry(entryId: string, accountId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
@@ -85,19 +85,19 @@ export async function deleteLedgerEntry(entryId: string, farmerId: string) {
   }
 
   // Refresh the ledger page to show the updated running balance
-  revalidatePath(`/farmer/${farmerId}`)
+  revalidatePath(`/account/${accountId}`)
 }
 
-export async function toggleFarmerStatus(farmerId: string, currentStatus: string) {
+export async function toggleAccountStatus(accountId: string, currentStatus: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   const newStatus = currentStatus === 'Active' ? 'Closed' : 'Active'
   
   const { error } = await supabase
-    .from('farmers')
+    .from('accounts')
     .update({ status: newStatus })
-    .eq('id', farmerId)
+    .eq('id', accountId)
 
   if (error) {
     console.error('Error updating status:', error)
@@ -105,7 +105,7 @@ export async function toggleFarmerStatus(farmerId: string, currentStatus: string
   }
 
   // Refresh both the specific ledger page and the main dashboard
-  revalidatePath(`/farmer/${farmerId}`)
+  revalidatePath(`/account/${accountId}`)
   revalidatePath('/')
 }
 
@@ -149,7 +149,7 @@ export async function changePassword(formData: FormData) {
   return redirect('/settings?success=Password updated successfully')
 }
 
-export async function editLedgerEntry(entryId: string, farmerId: string, formData: FormData) {
+export async function editLedgerEntry(entryId: string, accountId: string, formData: FormData) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -177,48 +177,48 @@ export async function editLedgerEntry(entryId: string, farmerId: string, formDat
   }
 
   // Refresh the ledger page and redirect back to it
-  revalidatePath(`/farmer/${farmerId}`)
-  redirect(`/farmer/${farmerId}`)
+  revalidatePath(`/account/${accountId}`)
+  redirect(`/account/${accountId}`)
 }
-export async function deleteFarmer(farmerId: string) {
+export async function deleteAccount(accountId: string) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   
-  // First, delete all ledger entries associated with this farmer
+  // First, delete all ledger entries associated with this account
   const { error: entriesError } = await supabase
     .from('ledger_entries')
     .delete()
-    .eq('farmer_id', farmerId)
+    .eq('account_id', accountId)
 
   if (entriesError) {
     console.error('Error deleting ledger entries:', entriesError)
     throw new Error('Failed to delete ledger entries')
   }
 
-  // Then, delete the farmer account
-  const { error: farmerError } = await supabase
-    .from('farmers')
+  // Then, delete the account account
+  const { error: accountError } = await supabase
+    .from('accounts')
     .delete()
-    .eq('id', farmerId)
+    .eq('id', accountId)
 
-  if (farmerError) {
-    console.error('Error deleting farmer:', farmerError)
-    throw new Error('Failed to delete farmer')
+  if (accountError) {
+    console.error('Error deleting account:', accountError)
+    throw new Error('Failed to delete account')
   }
 
   // Refresh the main dashboard and redirect to it
   revalidatePath('/')
   redirect('/')
 }
-export async function editFarmer(farmerId: string, formData: FormData) {
+export async function editaccount(accountId: string, formData: FormData) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { error } = await supabase.from('farmers').update({
+  const { error } = await supabase.from('accounts').update({
     name: formData.get('name') as string,
     father_name: (formData.get('father_name') as string) || null,
     area: (formData.get('area') as string) || null,
@@ -227,17 +227,17 @@ export async function editFarmer(farmerId: string, formData: FormData) {
     cnic: (formData.get('cnic') as string) || null, 
     crop: (formData.get('crop') as string) || null, 
     note: (formData.get('note') as string) || null,
-  }).eq('id', farmerId)
+  }).eq('id', accountId)
 
   if (error) {
-    console.error('Error updating farmer:', error)
-    throw new Error('Failed to update farmer')
+    console.error('Error updating account:', error)
+    throw new Error('Failed to update account')
   }
 
-  // Refresh the dashboard and redirect to the farmer's ledger
+  // Refresh the dashboard and redirect to the account's ledger
   revalidatePath('/')
-  revalidatePath(`/farmer/${farmerId}`)
-  redirect(`/farmer/${farmerId}`)
+  revalidatePath(`/account/${accountId}`)
+  redirect(`/account/${accountId}`)
 }
 export async function exportData() {
   const supabase = await createClient()
@@ -245,14 +245,14 @@ export async function exportData() {
   if (!user) throw new Error('Unauthorized')
 
   // Fetch absolutely everything from both tables
-  const { data: farmers } = await supabase.from('farmers').select('*')
+  const { data: accounts } = await supabase.from('accounts').select('*')
   const { data: entries } = await supabase.from('ledger_entries').select('*')
 
   // Return a tightly packed JSON string
   return JSON.stringify({ 
     version: 1, 
     timestamp: new Date().toISOString(),
-    farmers, 
+    accounts, 
     entries 
   })
 }
@@ -271,11 +271,11 @@ export async function importData(formData: FormData) {
 
     // Using { onConflict: 'id' } guarantees no duplicates. 
     // If the ID exists, it updates the record. If it's new, it inserts it.
-    if (data.farmers && data.farmers.length > 0) {
-      const { error: farmerError } = await supabase
-        .from('farmers')
-        .upsert(data.farmers, { onConflict: 'id' })
-      if (farmerError) throw farmerError
+    if (data.accounts && data.accounts.length > 0) {
+      const { error: accountError } = await supabase
+        .from('accounts')
+        .upsert(data.accounts, { onConflict: 'id' })
+      if (accountError) throw accountError
     }
 
     if (data.entries && data.entries.length > 0) {
@@ -299,9 +299,9 @@ export async function deleteAllData() {
   if (!user) throw new Error('Unauthorized')
 
   // .not('id', 'is', null) is the safest way to target and delete ALL rows in Supabase
-  // We delete entries first to prevent foreign key errors, then the farmers.
+  // We delete entries first to prevent foreign key errors, then the accounts.
   await supabase.from('ledger_entries').delete().not('id', 'is', null)
-  await supabase.from('farmers').delete().not('id', 'is', null)
+  await supabase.from('accounts').delete().not('id', 'is', null)
 
   revalidatePath('/')
   redirect('/settings?success=All data has been permanently deleted')

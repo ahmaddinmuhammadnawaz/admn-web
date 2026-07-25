@@ -1,9 +1,9 @@
-import { addFarmer } from '@/app/actions'
+import { addaccount } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { SubmitButton } from '@/components/SubmitButton'
 
-export default function AddFarmerPage() {
+export default function AddaccountPage() {
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
@@ -16,10 +16,10 @@ export default function AddFarmerPage() {
           >
             <ArrowLeft size={22} strokeWidth={2.25} />
           </Link>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Page</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Account</h1>
         </div>
 
-        <form action={addFarmer} className="flex flex-col gap-5">
+        <form action={addaccount} className="flex flex-col gap-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
             <input name="name" type="text" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
@@ -65,7 +65,7 @@ export default function AddFarmerPage() {
             ></textarea>
           </div>
 
-         <SubmitButton>Save Farmer</SubmitButton>
+         <SubmitButton>Save Account</SubmitButton>
         </form>
       </div>
     </main>

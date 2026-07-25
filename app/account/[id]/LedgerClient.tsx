@@ -15,32 +15,32 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
   const [isDeleting, setIsDeleting] = useState(false)
 
   // Create a handler for the delete button
-  const handleDelete = (entryId: string, farmerId: string) => {
+  const handleDelete = (entryId: string, accountId: string) => {
     if (window.confirm('Are you sure you want to delete this transaction? This will recalculate the balance.')) {
       setDeletingId(entryId)
       startTransition(async () => {
-        await deleteLedgerEntry(entryId, farmerId)
+        await deleteLedgerEntry(entryId, accountId)
         setDeletingId(null)
       })
     }
   }
 
-  const [deleteModal, setDeleteModal] = useState<{isOpen: boolean, entryId: string | null, farmerId: string | null}>({
+  const [deleteModal, setDeleteModal] = useState<{isOpen: boolean, entryId: string | null, accountId: string | null}>({
     isOpen: false,
     entryId: null,
-    farmerId: null
+    accountId: null
   })
 
   const handleConfirmDelete = async () => {
-    if (deleteModal.entryId && deleteModal.farmerId) {
+    if (deleteModal.entryId && deleteModal.accountId) {
       setIsDeleting(true) // 2. Start loading
       
       try {
-        await deleteLedgerEntry(deleteModal.entryId, deleteModal.farmerId)
+        await deleteLedgerEntry(deleteModal.entryId, deleteModal.accountId)
       } finally {
         // 3. Stop loading and close modal regardless of success/fail
         setIsDeleting(false) 
-        setDeleteModal({ isOpen: false, entryId: null, farmerId: null })
+        setDeleteModal({ isOpen: false, entryId: null, accountId: null })
       }
     }
   }
@@ -49,10 +49,10 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
   const [isNavigating, startNavigation] = useTransition()
   const [navigatingId, setNavigatingId] = useState<string | null>(null)
 
-  const handleEditNavigation = (farmerId: string, entryId: string) => {
+  const handleEditNavigation = (accountId: string, entryId: string) => {
     setNavigatingId(entryId)
     startNavigation(() => {
-      router.push(`/farmer/${farmerId}/edit-entry/${entryId}`)
+      router.push(`/account/${accountId}/edit-entry/${entryId}`)
     })
   }
 
@@ -236,7 +236,7 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                       <td className="px-4 py-3 text-center no-print">
                         <div className="flex items-center justify-center gap-1">
                           <button
-                            onClick={() => handleEditNavigation(entry.farmer_id, entry.id)}
+                            onClick={() => handleEditNavigation(entry.account_id, entry.id)}
                             disabled={isNavigating && navigatingId === entry.id}
                             className="text-gray-400 hover:text-[#131924] transition-colors p-1.5 rounded-lg hover:bg-gray-200 disabled:opacity-50"
                             title="Edit Entry"
@@ -249,7 +249,7 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                           </button>
 
                           <button
-                            onClick={() => setDeleteModal({ isOpen: true, entryId: entry.id, farmerId: entry.farmer_id })}
+                            onClick={() => setDeleteModal({ isOpen: true, entryId: entry.id, accountId: entry.account_id })}
                             className="text-gray-400 hover:text-[#DC2626] transition-colors p-1.5 rounded-lg hover:bg-red-50"
                             title="Delete Entry"
                           >
@@ -268,7 +268,7 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
       )}
      <ConfirmModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, entryId: null, farmerId: null })}
+        onClose={() => setDeleteModal({ isOpen: false, entryId: null, accountId: null })}
         onConfirm={handleConfirmDelete}
         title="Delete Transaction"
         description="Are you sure you want to delete this transaction? The running balance will be automatically recalculated."

@@ -3,15 +3,15 @@ import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import LedgerClient from './LedgerClient'
-import { toggleFarmerStatus, deleteFarmer } from '@/app/actions'
-import DeleteFarmerButton from './DeleteFarmerButton'
+import { toggleAccountStatus, deleteAccount } from '@/app/actions'
+import DeleteAccountButton from './DeleteAccountButton'
 import { ArrowLeft, Plus, User, Phone, MapPin, Handshake, Pencil, IdCard, Wheat, StickyNote } from 'lucide-react'
 import ToggleStatusButton from './ToggleStatusButton'
 import DateRangeFilter from '@/components/DateRangeFilter'
 import PrintButton from '@/components/PrintButton'
 
 
-export default async function FarmerLedger({
+export default async function accountLedger({
   params,
   searchParams,
 }: {
@@ -27,21 +27,21 @@ export default async function FarmerLedger({
   const rawYear = cookieStore.get('selected_year')?.value
   const selectedYear = rawYear ? decodeURIComponent(rawYear) : new Date().getFullYear().toString()
 
-  // Fetch farmer details...
-  const { data: farmer, error: farmerError } = await supabase
-    .from('farmers')
+  // Fetch account details...
+  const { data: account, error: accountError } = await supabase
+    .from('accounts')
     .select('*')
     .eq('id', id)
     .single()
 
-  if (farmerError || !farmer) notFound()
+  if (accountError || !account) notFound()
 
   const hasDateRange = Boolean(from || to)
 
   let entriesQuery = supabase
     .from('ledger_entries')
     .select('*')
-    .eq('farmer_id', id)
+    .eq('account_id', id)
 
   // 1. Initialize past balance
   let pastBalance = 0
@@ -53,7 +53,7 @@ export default async function FarmerLedger({
       const { data: pastEntries } = await supabase
         .from('ledger_entries')
         .select('debit, credit')
-        .eq('farmer_id', id)
+        .eq('account_id', id)
         .lt('entry_date', from)
 
       pastEntries?.forEach(e => {
@@ -73,7 +73,7 @@ export default async function FarmerLedger({
     const { data: pastEntries } = await supabase
       .from('ledger_entries')
       .select('debit, credit')
-      .eq('farmer_id', id)
+      .eq('account_id', id)
       .lt('entry_date', `${earliestYear}-01-01`)
 
     pastEntries?.forEach(e => {
@@ -111,8 +111,8 @@ export default async function FarmerLedger({
     }
   }).reverse()
 
-  const toggleStatus = toggleFarmerStatus.bind(null, farmer.id, farmer.status)
-  const deleteAccount = deleteFarmer.bind(null, farmer.id)
+  const toggleStatus = toggleAccountStatus.bind(null, account.id, account.status)
+  const deleteAction = deleteAccount.bind(null, account.id) 
 
   return (
     <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
@@ -132,9 +132,9 @@ export default async function FarmerLedger({
 
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href={`/farmer/${farmer.id}/edit`}
+                href={`/account/${account.id}/edit`}
                 className="text-white/80 hover:text-white p-2 sm:px-3 sm:py-2 flex items-center justify-center transition-colors rounded-lg hover:bg-white/10"
-                title="Edit Farmer"
+                title="Edit account"
               >
                 <Pencil size={18} strokeWidth={2.25} />
                 <span className="hidden md:inline ml-2 text-sm font-medium">Edit</span>
@@ -142,56 +142,56 @@ export default async function FarmerLedger({
               <div className="w-px h-4 bg-white/20 hidden sm:block" />
 
               <form action={toggleStatus}>
-                <ToggleStatusButton currentStatus={farmer.status} />
+                <ToggleStatusButton currentStatus={account.status} />
               </form>
               <div className="w-px h-4 bg-white/20" />
-              <form action={deleteAccount}>
-                <DeleteFarmerButton />
+              <form action={deleteAction}>
+                <DeleteAccountButton />
               </form>
             </div>
           </div>
 
-          {/* Row 2: Farmer info (left) + Balance/Add Entry (right) */}
+          {/* Row 2: account info (left) + Balance/Add Entry (right) */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 truncate">
-                {farmer.name}
+                {account.name}
               </h1>
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-white/60">
-                {farmer.father_name && (
+                {account.father_name && (
                   <p className="flex items-center gap-1.5">
-                    <User size={14} strokeWidth={2} /> S/O {farmer.father_name}
+                    <User size={14} strokeWidth={2} /> S/O {account.father_name}
                   </p>
                 )}
-                {farmer.phone && (
+                {account.phone && (
                   <p className="flex items-center gap-1.5">
-                    <Phone size={14} strokeWidth={2} /> {farmer.phone}
+                    <Phone size={14} strokeWidth={2} /> {account.phone}
                   </p>
                 )}
-                {farmer.area && (
+                {account.area && (
                   <p className="flex items-center gap-1.5">
-                    <MapPin size={14} strokeWidth={2} /> {farmer.area}
+                    <MapPin size={14} strokeWidth={2} /> {account.area}
                   </p>
                 )}
-                {farmer.reference_person && (
+                {account.reference_person && (
                   <p className="flex items-center gap-1.5">
-                    <Handshake size={14} strokeWidth={2} /> Ref: {farmer.reference_person}
+                    <Handshake size={14} strokeWidth={2} /> Ref: {account.reference_person}
                   </p>
                 )}
-                {farmer.cnic && (
+                {account.cnic && (
                   <p className="flex items-center gap-1.5">
-                    <IdCard size={14} strokeWidth={2} /> {farmer.cnic}
+                    <IdCard size={14} strokeWidth={2} /> {account.cnic}
                   </p>
                 )}
-                {farmer.crop && (
+                {account.crop && (
                   <p className="flex items-center gap-1.5">
-                    <Wheat size={14} strokeWidth={2} /> {farmer.crop}
+                    <Wheat size={14} strokeWidth={2} /> {account.crop}
                   </p>
                 )}
-                {farmer.note && (
+                {account.note && (
                 <div className="mt-4 flex items-start gap-2.5 text-sm text-white/80 bg-white/10 p-3.5 rounded-xl border border-white/10 w-full max-w-xl">
                   <StickyNote size={18} strokeWidth={2} className="shrink-0 mt-0.5 text-white/60" />
-                  <p className="leading-relaxed whitespace-pre-wrap">{farmer.note}</p>
+                  <p className="leading-relaxed whitespace-pre-wrap">{account.note}</p>
                 </div>
               )}
               </div>
@@ -213,9 +213,9 @@ export default async function FarmerLedger({
                 </p>
               </div>
 
-              {farmer.status === 'Active' && (
+              {account.status === 'Active' && (
                 <Link
-                  href={`/farmer/${id}/add-entry`}
+                  href={`/account/${id}/add-entry`}
                   className="bg-white text-[#131924] w-11 h-11 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 rounded-full sm:rounded-xl font-bold text-sm hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-sm"
                 >
                   <Plus size={20} strokeWidth={2.5} className="sm:hidden" />
@@ -240,9 +240,9 @@ export default async function FarmerLedger({
       {/* Print-only header (shown only in the printed/PDF output) */}
       <div className="print-only px-4 sm:px-6 pt-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-extrabold mb-3">Ahmad Din Muhammad Nawaz Commission Shop</h1>
-        <h1 className="text-xl font-bold mb-1">{farmer.name}</h1>
+        <h1 className="text-xl font-bold mb-1">{account.name}</h1>
         <p className="text-sm text-gray-600 mb-1">
-          {farmer.area ? `${farmer.area} · ` : ''}{farmer.phone || ''}
+          {account.area ? `${account.area} · ` : ''}{account.phone || ''}
         </p>
         <p className="text-sm text-gray-600 mb-1">
           {hasDateRange ? `Period: ${from || 'Start'} to ${to || 'Today'}` : `Year: ${selectedYear}`}

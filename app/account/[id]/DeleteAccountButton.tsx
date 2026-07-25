@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { ConfirmModal } from '@/components/ConfirmModal'
 
-export default function DeleteFarmerButton() {
+export default function DeleteaccountButton() {
   const [showModal, setShowModal] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -32,8 +32,8 @@ export default function DeleteFarmerButton() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirm}
-        title="Delete Page"
-        description="Are you sure you want to completely delete this page and all their ledger entries? This action cannot be undone."
+        title="Delete Account"
+        description="Are you sure you want to completely delete this Account and all their ledger entries? This action cannot be undone."
         confirmText="Delete Forever"
         isDestructive={true}
         requireWord="DELETE" // This enables the text input requirement

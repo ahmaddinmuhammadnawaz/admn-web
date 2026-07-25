@@ -28,7 +28,7 @@ export default function GlobalLoading() {
         {/* Search Bar Skeleton */}
         <div className="bg-gray-200/50 rounded-2xl border border-[#E5E7EB] mb-6 h-[72px] animate-pulse shadow-sm"></div>
 
-        {/* Farmers Grid Skeleton */}
+        {/* accounts Grid Skeleton */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="p-5 bg-gray-200/50 border border-[#E5E7EB] rounded-xl shadow-sm h-[104px] animate-pulse flex flex-col justify-center gap-3">

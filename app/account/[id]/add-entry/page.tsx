@@ -10,7 +10,7 @@ export default async function AddEntryPage({
 }) {
   const { id } = await params
 
-  // Bind the farmer ID to the server action so it knows which ledger to update
+  // Bind the account ID to the server action so it knows which ledger to update
   const addEntryWithId = addLedgerEntry.bind(null, id)
 
   const getPKTDate = () => {
@@ -29,7 +29,7 @@ export default async function AddEntryPage({
 
         {/* Responsive Header: Stacks "Cancel" and "Add Entry" neatly */}
         <div className="flex flex-col gap-5 mb-6">
-          <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
+          <Link href={`/account/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
             <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
           </Link>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#131924]">Add Entry</h1>

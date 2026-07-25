@@ -9,7 +9,7 @@ export default async function HistoryPage() {
   // Query the new SQL View directly. This is extremely fast because 
   // the database does the math, and Next.js only downloads the final summaries.
   const { data: summaries, error } = await supabase
-    .from('farmer_outstanding_summaries')
+    .from('account_outstanding_summaries')
     .select('*')
     .order('name', { ascending: true })
 
@@ -20,7 +20,7 @@ export default async function HistoryPage() {
   let totalDebit = 0
   let totalCredit = 0
 
-  // Only loop through the aggregated rows (e.g., 50 farmers instead of 5,000 entries)
+  // Only loop through the aggregated rows (e.g., 50 accounts instead of 5,000 entries)
   const summaryList = summaries || []
   summaryList.forEach(summary => {
     totalDebit += Number(summary.total_debit) || 0
@@ -95,7 +95,7 @@ export default async function HistoryPage() {
                 <Receipt size={28} strokeWidth={1.75} />
             </div>
             <p className="text-lg font-medium text-gray-900 mb-1">No outstanding balances</p>
-            <p className="text-sm text-gray-500">When you add entries to farmers, their summaries will appear here.</p>
+            <p className="text-sm text-gray-500">When you add entries to accounts, their summaries will appear here.</p>
             </div>
         ) : (
             <div className="overflow-x-auto thin-scrollbar">
@@ -122,7 +122,7 @@ export default async function HistoryPage() {
                     const balanceColor = bal > 0 ? 'text-[#DC2626]' : bal < 0 ? 'text-[#16A34A]' : 'text-gray-900'
 
                     return (
-                    <tr key={summary.farmer_id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
+                    <tr key={summary.account_id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
                         <td className="px-5 py-4 text-sm font-bold text-[#131924] whitespace-nowrap">
                           {summary.name}
                         </td>

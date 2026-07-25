@@ -1,4 +1,4 @@
-export default function EditFarmerLoading() {
+export default function EditaccountLoading() {
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10 animate-pulse">

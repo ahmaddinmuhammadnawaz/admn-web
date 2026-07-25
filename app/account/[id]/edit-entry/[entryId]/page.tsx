@@ -28,7 +28,7 @@ export default async function EditEntryPage({
   const isDebit = Number(entry.debit) > 0
   const currentAmount = isDebit ? entry.debit : entry.credit
 
-  // Bind both the entry ID and farmer ID to the server action
+  // Bind both the entry ID and account ID to the server action
   const editEntryWithIds = editLedgerEntry.bind(null, entryId, id)
 
   return (
@@ -36,7 +36,7 @@ export default async function EditEntryPage({
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
 
         <div className="flex flex-col gap-5 mb-6">
-          <Link href={`/farmer/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
+          <Link href={`/account/${id}`} className="text-[#6B7280] hover:text-[#131924] text-sm font-medium flex items-center gap-1.5 w-fit transition-colors">
             <ArrowLeft size={16} strokeWidth={2.25} /> Cancel
           </Link>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#131924]">Edit Transaction</h1>

@@ -82,7 +82,7 @@ export default function DataManagementClient({
           {/* Export Section */}
           <div className="bg-[#F7F8FA] p-5 rounded-xl border border-[#E5E7EB]">
             <h3 className="font-bold text-gray-900 mb-1">Export Backup</h3>
-            <p className="text-sm text-gray-500 mb-4">Download a complete, highly optimized local copy of all your farmers and ledger entries.</p>
+            <p className="text-sm text-gray-500 mb-4">Download a complete, highly optimized local copy of all your accounts and ledger entries.</p>
             <button
               onClick={handleExport}
               disabled={isExporting || isImporting || isDeleting}
@@ -146,7 +146,7 @@ export default function DataManagementClient({
         </div>
         
         <p className="text-sm text-gray-600 mb-5 relative z-10">
-          This action will permanently delete <strong className="text-gray-900 font-bold">EVERYTHING</strong> in your database. All farmers, accounts, and ledger entries will be completely erased. This cannot be undone. Please ensure you have downloaded a backup first.
+          This action will permanently delete <strong className="text-gray-900 font-bold">EVERYTHING</strong> in your database. All accounts, accounts, and ledger entries will be completely erased. This cannot be undone. Please ensure you have downloaded a backup first.
         </p>
         
         <button 
