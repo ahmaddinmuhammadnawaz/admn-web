@@ -24,8 +24,8 @@ export async function addFarmer(formData: FormData) {
   }).select().single()
 
   if (error) {
-    console.error('Error adding farmer:', error)
-    throw new Error('Failed to add farmer')
+    console.error('Error adding Page:', error)
+    throw new Error('Failed to add Page')
   }
 
   // Refresh the dashboard and redirect to the new farmer's ledger

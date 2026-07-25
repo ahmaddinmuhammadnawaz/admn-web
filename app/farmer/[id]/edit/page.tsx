@@ -39,7 +39,7 @@ export default async function EditFarmerPage({
           >
             <ArrowLeft size={22} strokeWidth={2.25} />
           </Link>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Edit Farmer Info</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Edit Info</h1>
         </div>
 
         <form action={updateFarmerWithId} className="flex flex-col gap-5">

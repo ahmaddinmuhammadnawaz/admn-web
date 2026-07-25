@@ -102,7 +102,7 @@ export default async function HistoryPage() {
             <table className="w-full text-left border-collapse min-w-[700px]">
                 <thead>
                 <tr className="bg-[#F7F8FA] border-b border-[#E5E7EB] text-[#6B7280] text-[11px] sm:text-xs uppercase tracking-wider divide-x divide-[#E5E7EB]">
-                    <th className="px-5 py-4 font-semibold w-[40%]">Farmer Name</th>
+                    <th className="px-5 py-4 font-semibold w-[40%]">Name</th>
                     <th className="px-5 py-4 font-semibold text-right w-[20%]">Total Debit</th>
                     <th className="px-5 py-4 font-semibold text-right w-[20%]">Total Credit</th>
                     <th className="px-5 py-4 font-semibold text-right w-[20%]">Current Balance</th>

@@ -32,8 +32,8 @@ export default function DeleteFarmerButton() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirm}
-        title="Delete Farmer"
-        description="Are you sure you want to completely delete this farmer and all their ledger entries? This action cannot be undone."
+        title="Delete Page"
+        description="Are you sure you want to completely delete this page and all their ledger entries? This action cannot be undone."
         confirmText="Delete Forever"
         isDestructive={true}
         requireWord="DELETE" // This enables the text input requirement

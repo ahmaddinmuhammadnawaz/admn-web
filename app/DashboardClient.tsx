@@ -107,7 +107,7 @@ export default function DashboardClient({ initialFarmers, stats }: DashboardClie
             {searchQuery !== '' ? 'No matches found' : `No ${statusFilter.toLowerCase()} accounts yet`}
           </p>
           <p className="text-sm text-gray-400 mt-1">
-            {searchQuery !== '' ? 'Try a different name, area, or phone number.' : 'New farmers you add will show up here.'}
+            {searchQuery !== '' ? 'Try a different name, area, or phone number.' : 'New Pages you add will show up here.'}
           </p>
         </div>
       ) : (

@@ -16,7 +16,7 @@ export default function AddFarmerPage() {
           >
             <ArrowLeft size={22} strokeWidth={2.25} />
           </Link>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Farmer</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Page</h1>
         </div>
 
         <form action={addFarmer} className="flex flex-col gap-5">
