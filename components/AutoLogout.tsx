@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, startTransition } from 'react'
 import { usePathname } from 'next/navigation'
-import { signOut } from '@/app/actions' // Imports your existing server action
+import { signOut } from '@/app/actions' 
 
 export function AutoLogout() {
   const pathname = usePathname()
@@ -14,8 +14,10 @@ export function AutoLogout() {
     // Disable the idle timeout if the user is already on the login screen
     if (pathname === '/login') return
 
-    const handleLogout = async () => {
-      await signOut() 
+    const handleLogout = () => {
+      startTransition(async () => {
+        await signOut() 
+      })
     }
 
     const resetTimer = () => {
@@ -28,7 +30,17 @@ export function AutoLogout() {
 
     // Events that count as user "activity"
     const events = ['mousemove', 'keydown', 'wheel', 'click', 'scroll', 'touchstart']
-    const handleActivity = () => resetTimer()
+    
+    let lastActivity = Date.now()
+    const THROTTLE_MS = 2000 // Only reset the timer at most once every 2 seconds
+
+    const handleActivity = () => {
+      const now = Date.now()
+      if (now - lastActivity > THROTTLE_MS) {
+        lastActivity = now
+        resetTimer()
+      }
+    }
     
     // Attach passive event listeners to the window
     events.forEach(event => {

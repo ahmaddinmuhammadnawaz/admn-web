@@ -15,15 +15,13 @@ export default async function Home() {
   const selectedYear = rawYear ? decodeURIComponent(rawYear) : new Date().getFullYear().toString()
   
   // Build the query
-  let entriesQuery = supabase.from('ledger_entries').select('account_id, debit, credit')
+  let entriesQuery = supabase.from('ledger_entries').select('account_id, debit, credit').limit(500000)
   
   if (selectedYear !== 'All') {
     const yearsArray = selectedYear.split(',')
-    const orConditions = yearsArray
-      .map(y => `and(entry_date.gte.${y.trim()}-01-01,entry_date.lte.${y.trim()}-12-31)`)
-      .join(',')
+    const maxYear = Math.max(...yearsArray.map(y => parseInt(y.trim(), 10)))
     
-    entriesQuery = entriesQuery.or(orConditions)
+    entriesQuery = entriesQuery.lte('entry_date', `${maxYear}-12-31`)
   }
 
   // Fetch accounts and filtered ledger entries

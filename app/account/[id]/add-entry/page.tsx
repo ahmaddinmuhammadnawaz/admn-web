@@ -14,14 +14,8 @@ export default async function AddEntryPage({
   const addEntryWithId = addLedgerEntry.bind(null, id)
 
   const getPKTDate = () => {
-  const date = new Date()
-  const options = { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' } as const
-  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date)
-  const year = parts.find(p => p.type === 'year')?.value
-  const month = parts.find(p => p.type === 'month')?.value
-  const day = parts.find(p => p.type === 'day')?.value
-  return `${year}-${month}-${day}`
-}
+    return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' })
+  }
 
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">

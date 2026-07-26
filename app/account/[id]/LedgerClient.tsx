@@ -1,29 +1,15 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { deleteLedgerEntry } from '@/app/actions'
 import { ConfirmModal } from '@/components/ConfirmModal'
 import { Search, X, Pencil, Trash2, Receipt, Loader2 } from 'lucide-react'
 
-
 export default function LedgerClient({ initialEntries }: { initialEntries: any[] }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('All')
-  const [isPending, startTransition] = useTransition()
-  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  // Create a handler for the delete button
-  const handleDelete = (entryId: string, accountId: string) => {
-    if (window.confirm('Are you sure you want to delete this transaction? This will recalculate the balance.')) {
-      setDeletingId(entryId)
-      startTransition(async () => {
-        await deleteLedgerEntry(entryId, accountId)
-        setDeletingId(null)
-      })
-    }
-  }
 
   const [deleteModal, setDeleteModal] = useState<{isOpen: boolean, entryId: string | null, accountId: string | null}>({
     isOpen: false,
@@ -33,12 +19,14 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
 
   const handleConfirmDelete = async () => {
     if (deleteModal.entryId && deleteModal.accountId) {
-      setIsDeleting(true) // 2. Start loading
+      setIsDeleting(true)
       
       try {
         await deleteLedgerEntry(deleteModal.entryId, deleteModal.accountId)
+      } catch (error) {
+        console.error("Failed to delete entry:", error)
+        alert("Failed to delete the transaction. Please try again.")
       } finally {
-        // 3. Stop loading and close modal regardless of success/fail
         setIsDeleting(false) 
         setDeleteModal({ isOpen: false, entryId: null, accountId: null })
       }
@@ -56,25 +44,29 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
     })
   }
 
-  const filteredEntries = initialEntries.filter((entry) => {
-    // 1. Apply Type Filter
-    if (filterType === 'Debit' && Number(entry.debit) === 0) return false
-    if (filterType === 'Credit' && Number(entry.credit) === 0) return false
+  // Wrapped in useMemo for performance and updated to match 31/8 format
+  const filteredEntries = useMemo(() => {
+    return initialEntries.filter((entry) => {
+      // 1. Apply Type Filter
+      if (filterType === 'Debit' && Number(entry.debit) === 0) return false
+      if (filterType === 'Credit' && Number(entry.credit) === 0) return false
 
-    // 2. Apply Search Filter
-    if (searchQuery === '') return true
+      // 2. Apply Search Filter
+      if (searchQuery === '') return true
 
-    const query = searchQuery.toLowerCase()
-    const detailMatch = (entry.detail || '').toLowerCase().includes(query)
-    const refMatch = (entry.reference || '').toLowerCase().includes(query)
-    const pageMatch = (entry.page_no || '').toLowerCase().includes(query)
+      const query = searchQuery.toLowerCase()
+      const detailMatch = (entry.detail || '').toLowerCase().includes(query)
+      const refMatch = (entry.reference || '').toLowerCase().includes(query)
+      const pageMatch = (entry.page_no || '').toLowerCase().includes(query)
 
-    // Format date to match typical search patterns
-    const dateStr = new Date(entry.entry_date).toLocaleDateString()
-    const dateMatch = dateStr.includes(query)
+      // Format date manually to match the exact visual table layout (e.g., 31/8)
+      const dateObj = new Date(entry.entry_date)
+      const dateStr = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`
+      const dateMatch = dateStr.includes(query)
 
-    return detailMatch || refMatch || pageMatch || dateMatch
-  })
+      return detailMatch || refMatch || pageMatch || dateMatch
+    })
+  }, [initialEntries, filterType, searchQuery])
 
   return (
     <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
@@ -163,109 +155,103 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E5E7EB]">
-                  {filteredEntries.map((entry) => {
-                    // NEW: Pre-format the values for the row
-                    const formattedDebit = Number(entry.debit) > 0 ? new Intl.NumberFormat('en-PK').format(entry.debit) : ''
-                    const formattedCredit = Number(entry.credit) > 0 ? new Intl.NumberFormat('en-PK').format(entry.credit) : ''
-                    const formattedRunningBalance = entry.runningBalance === 0 ? '0' : new Intl.NumberFormat('en-PK').format(Math.abs(entry.runningBalance))
+                  {(() => {
+                    // Instantiate exactly ONCE before the loop for massive performance gains
+                    const pkrFormatter = new Intl.NumberFormat('en-PK')
+                    
+                    return filteredEntries.map((entry) => {
+                      const formattedDebit = Number(entry.debit) > 0 ? pkrFormatter.format(entry.debit) : ''
+                      const formattedCredit = Number(entry.credit) > 0 ? pkrFormatter.format(entry.credit) : ''
+                      const formattedRunningBalance = entry.runningBalance === 0 ? '0' : pkrFormatter.format(Math.abs(entry.runningBalance))
 
-                    return (
-                      <tr key={entry.id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
-                      {/* Date */}
-                        <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap tnum">
-                          {new Date(entry.entry_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' })}
-                        </td>
+                      return (
+                        <tr key={entry.id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
+                          {/* Date */}
+                          <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap tnum">
+                            {`${new Date(entry.entry_date).getDate()}/${new Date(entry.entry_date).getMonth() + 1}`}
+                          </td>
 
-                      {/* Page No */}
-                      <td className="px-4 py-3 text-sm text-gray-500">
-                        {entry.page_no || ''}
-                      </td>
+                          {/* Page No */}
+                          <td className="px-4 py-3 text-sm text-gray-500">
+                            {entry.page_no || ''}
+                          </td>
 
-                      {/* Detail */}
-                      <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] max-w-[300px] whitespace-pre-wrap break-words">
-                        {entry.detail || ''}
-                      </td>
+                          {/* Detail */}
+                          <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] max-w-[300px] whitespace-pre-wrap break-words">
+                            {entry.detail || ''}
+                          </td>
 
-                      {/* Reference */}
-                      <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate" title={entry.reference}>
-                        {entry.reference || ''}
-                      </td>
+                          {/* Reference */}
+                          <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate" title={entry.reference}>
+                            {entry.reference || ''}
+                          </td>
 
-                      {/* Debit */}
-                      <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">
-                        {formattedDebit}
-                      </td>
+                          {/* Debit */}
+                          <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">
+                            {formattedDebit}
+                          </td>
 
-                      {/* Credit */}
-                      <td className="px-4 py-3 text-sm text-right font-semibold text-[#16A34A] tnum whitespace-nowrap">
-                        {formattedCredit}
-                      </td>
+                          {/* Credit */}
+                          <td className="px-4 py-3 text-sm text-right font-semibold text-[#16A34A] tnum whitespace-nowrap">
+                            {formattedCredit}
+                          </td>
 
-                      {/* Running Balance */}
-                      <td className="px-4 py-3 text-sm text-right whitespace-nowrap">
-                        <span
-                          className={`font-bold tnum ${
-                            entry.runningBalance < 0
-                              ? 'text-[#16A34A]'
-                              : entry.runningBalance > 0
-                              ? 'text-[#DC2626]'
-                              : 'text-gray-900'
-                          }`}
-                        >
-                          {entry.runningBalance > 0
-                            ? 'Debit '
-                            : entry.runningBalance < 0
-                            ? 'Credit '
-                            : ''}
-                        </span>
+                          {/* Running Balance */}
+                          <td className="px-4 py-3 text-sm text-right whitespace-nowrap">
+                            <span
+                              className={`font-bold tnum ${
+                                entry.runningBalance < 0
+                                  ? 'text-[#16A34A]'
+                                  : entry.runningBalance > 0
+                                  ? 'text-[#DC2626]'
+                                  : 'text-gray-900'
+                              }`}
+                            >
+                              {entry.runningBalance > 0
+                                ? 'Debit '
+                                : entry.runningBalance < 0
+                                ? 'Credit '
+                                : ''}
+                              {formattedRunningBalance}
+                            </span>
+                          </td>
 
-                        <span
-                          className={`font-bold tnum ${
-                            entry.runningBalance < 0
-                              ? 'text-[#16A34A]'
-                              : entry.runningBalance > 0
-                              ? 'text-[#DC2626]'
-                              : 'text-gray-900'
-                          }`}
-                        >
-                          {formattedRunningBalance}
-                        </span>
-                      </td>
+                          {/* Actions */}
+                          <td className="px-4 py-3 text-center no-print">
+                            <div className="flex items-center justify-center gap-1">
+                              <button
+                                onClick={() => handleEditNavigation(entry.account_id, entry.id)}
+                                disabled={isNavigating && navigatingId === entry.id}
+                                className="text-gray-400 hover:text-[#131924] transition-colors p-1.5 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+                                title="Edit Entry"
+                              >
+                                {isNavigating && navigatingId === entry.id ? (
+                                  <Loader2 size={15} strokeWidth={2} className="animate-spin text-[#131924]" />
+                                ) : (
+                                  <Pencil size={15} strokeWidth={2} />
+                                )}
+                              </button>
 
-                      {/* Actions */}
-                      <td className="px-4 py-3 text-center no-print">
-                        <div className="flex items-center justify-center gap-1">
-                          <button
-                            onClick={() => handleEditNavigation(entry.account_id, entry.id)}
-                            disabled={isNavigating && navigatingId === entry.id}
-                            className="text-gray-400 hover:text-[#131924] transition-colors p-1.5 rounded-lg hover:bg-gray-200 disabled:opacity-50"
-                            title="Edit Entry"
-                          >
-                            {isNavigating && navigatingId === entry.id ? (
-                              <Loader2 size={15} strokeWidth={2} className="animate-spin text-[#131924]" />
-                            ) : (
-                              <Pencil size={15} strokeWidth={2} />
-                            )}
-                          </button>
-
-                          <button
-                            onClick={() => setDeleteModal({ isOpen: true, entryId: entry.id, accountId: entry.account_id })}
-                            className="text-gray-400 hover:text-[#DC2626] transition-colors p-1.5 rounded-lg hover:bg-red-50"
-                            title="Delete Entry"
-                          >
-                            <Trash2 size={15} strokeWidth={2} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    )
-                  })}
+                              <button
+                                onClick={() => setDeleteModal({ isOpen: true, entryId: entry.id, accountId: entry.account_id })}
+                                className="text-gray-400 hover:text-[#DC2626] transition-colors p-1.5 rounded-lg hover:bg-red-50"
+                                title="Delete Entry"
+                              >
+                                <Trash2 size={15} strokeWidth={2} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  })()}
                 </tbody>
               </table>
             </div>
           </div>
         </>
       )}
+
      <ConfirmModal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, entryId: null, accountId: null })}

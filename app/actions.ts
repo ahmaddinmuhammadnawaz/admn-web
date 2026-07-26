@@ -50,7 +50,7 @@ export async function addLedgerEntry(accountId: string, formData: FormData) {
     page_no: (formData.get('page_no') as string) || null,
     detail: (formData.get('detail') as string) || null,
     reference: (formData.get('reference') as string) || null,
-    entry_date: (formData.get('entry_date') as string) || new Date().toISOString().split('T')[0],
+    entry_date: (formData.get('entry_date') as string) || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' }),
   })
 
   if (error) {
@@ -167,7 +167,7 @@ export async function editLedgerEntry(entryId: string, accountId: string, formDa
       page_no: (formData.get('page_no') as string) || null,
       detail: (formData.get('detail') as string) || null,
       reference: (formData.get('reference') as string) || null,
-      entry_date: (formData.get('entry_date') as string) || new Date().toISOString().split('T')[0],
+      entry_date: (formData.get('entry_date') as string) || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' }),
     })
     .eq('id', entryId)
 
@@ -244,9 +244,9 @@ export async function exportData() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Fetch absolutely everything from both tables
-  const { data: accounts } = await supabase.from('accounts').select('*')
-  const { data: entries } = await supabase.from('ledger_entries').select('*')
+// Fetch absolutely everything from both tables with an explicit high limit
+  const { data: accounts } = await supabase.from('accounts').select('*').limit(100000)
+  const { data: entries } = await supabase.from('ledger_entries').select('*').limit(500000)
 
   // Return a tightly packed JSON string
   return JSON.stringify({ 

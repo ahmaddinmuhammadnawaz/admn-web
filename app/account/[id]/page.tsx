@@ -42,6 +42,7 @@ export default async function accountLedger({
     .from('ledger_entries')
     .select('*')
     .eq('account_id', id)
+    .limit(500000)
 
   // 1. Initialize past balance
   let pastBalance = 0
@@ -66,25 +67,10 @@ export default async function accountLedger({
 
   } else if (selectedYear !== 'All') {
     const yearsArray = selectedYear.split(',')
+    const maxYear = Math.max(...yearsArray.map(y => parseInt(y.trim(), 10)))
     
-    // Find the earliest year to establish the cut-off for past balances
-    const earliestYear = Math.min(...yearsArray.map(y => parseInt(y.trim(), 10)))
-    
-    const { data: pastEntries } = await supabase
-      .from('ledger_entries')
-      .select('debit, credit')
-      .eq('account_id', id)
-      .lt('entry_date', `${earliestYear}-01-01`)
-
-    pastEntries?.forEach(e => {
-      pastBalance += (Number(e.debit) || 0) - (Number(e.credit) || 0)
-    })
-
-    const orConditions = yearsArray
-      .map(y => `and(entry_date.gte.${y.trim()}-01-01,entry_date.lte.${y.trim()}-12-31)`)
-      .join(',')
-
-    entriesQuery = entriesQuery.or(orConditions)
+    // Fetch all historical data up to the maximum selected year to ensure perfect math
+    entriesQuery = entriesQuery.lte('entry_date', `${maxYear}-12-31`)
   }
 
   // 3. Execute the main query for the visible rows
@@ -96,10 +82,10 @@ export default async function accountLedger({
     return <div className="p-8 text-red-600">Error loading ledger entries.</div>
   }
 
-  // 4. Set current balance to the historical past balance, NOT zero
   let currentBalance = pastBalance
 
-  const processedEntries = entries.map((entry) => {
+  // 4. Calculate perfect running balances chronologically for all fetched entries
+  const allProcessed = entries.map((entry) => {
     const debit = Number(entry.debit) || 0
     const credit = Number(entry.credit) || 0
 
@@ -109,7 +95,15 @@ export default async function accountLedger({
       ...entry,
       runningBalance: currentBalance,
     }
-  }).reverse()
+  })
+
+  // 5. After the math is done, filter out the years the user explicitly unchecked
+  const processedEntries = selectedYear === 'All' 
+    ? allProcessed 
+    : allProcessed.filter((entry) => {
+        const entryYear = entry.entry_date.split('-')[0]
+        return selectedYear.split(',').includes(entryYear)
+      })
 
   const toggleStatus = toggleAccountStatus.bind(null, account.id, account.status)
   const deleteAction = deleteAccount.bind(null, account.id) 
