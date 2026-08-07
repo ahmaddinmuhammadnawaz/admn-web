@@ -2,25 +2,29 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, X, MapPin, Phone, ChevronRight, Users, User } from 'lucide-react'
+import { Search, X, MapPin, Phone, ChevronRight, Users, User, Folder } from 'lucide-react'
 
 interface DashboardClientProps {
   initialaccounts: any[]
-  stats: {
+  folders?: any[] // Made optional
+  stats?: { // Made optional
     activeCount: number
     closedCount: number
     netBalance: number
     balanceLabel: string
   }
+  isFolderView?: boolean // NEW: Tells the client it's rendering inside a folder
 }
 
-export default function DashboardClient({ initialaccounts, stats }: DashboardClientProps) {
+export default function DashboardClient({ initialaccounts, folders = [], stats, isFolderView = false }: DashboardClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('Active')
 
   // Filter the accounts based on search query and tab status
   const filteredaccounts = initialaccounts.filter((account) => {
-    if (account.status !== statusFilter) return false
+    // Only apply the Active/Closed filter if we are NOT in folder view
+    if (!isFolderView && account.status !== statusFilter) return false
+    
     if (searchQuery === '') return true
 
     const query = searchQuery.toLowerCase()
@@ -33,46 +37,56 @@ export default function DashboardClient({ initialaccounts, stats }: DashboardCli
     return nameMatch || areaMatch || phoneMatch || refMatch || fatherMatch
   })
 
+  // NEW: If we are in folder view, show all filtered accounts. 
+  // If on the home screen, only show "loose" accounts that don't belong to a folder.
+  const displayAccounts = isFolderView ? filteredaccounts : filteredaccounts.filter(a => !a.folder_id)
+
+  const filteredFolders = folders.filter(folder => 
+    searchQuery === '' || folder.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <>
-      {/* Interactive Stats Row */}
-      <div className="flex gap-3 mb-6">
-        <button 
-          onClick={() => setStatusFilter('Active')}
-          className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
-            statusFilter === 'Active' ? 'bg-white border-[#16A34A] ring-1 ring-[#16A34A]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
-          }`}
-        >
-          <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{stats.activeCount}</p>
-          <p className="text-xs text-gray-500 font-medium mt-1">Active</p>
-        </button>
-        
-        <button 
-          onClick={() => setStatusFilter('Closed')}
-          className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
-            statusFilter === 'Closed' ? 'bg-white border-[#6B7280] ring-1 ring-[#6B7280]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
-          }`}
-        >
-          <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{stats.closedCount}</p>
-          <p className="text-xs text-gray-500 font-medium mt-1">Closed</p>
-        </button>
-        
-        <Link 
-          href="/history"
-          className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] hover:border-[#131924] shadow-sm flex-1 min-w-0 text-center transition-all cursor-pointer block"
-        >
-          <p className={`text-base sm:text-lg font-bold truncate tnum ${
-            stats.netBalance > 0 
-              ? 'text-[#DC2626]' 
-              : stats.netBalance < 0 
-              ? 'text-[#16A34A]' 
-              : 'text-gray-900'
-          }`}>
-            {stats.balanceLabel}
-          </p>
-          <p className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1">Outstanding</p>
-        </Link>
-      </div>
+      {/* Interactive Stats Row - ONLY SHOW IF NOT IN FOLDER VIEW */}
+      {!isFolderView && stats && (
+        <div className="flex gap-3 mb-6">
+          <button 
+            onClick={() => setStatusFilter('Active')}
+            className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
+              statusFilter === 'Active' ? 'bg-white border-[#16A34A] ring-1 ring-[#16A34A]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
+            }`}
+          >
+            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{stats.activeCount}</p>
+            <p className="text-xs text-gray-500 font-medium mt-1">Active</p>
+          </button>
+          
+          <button 
+            onClick={() => setStatusFilter('Closed')}
+            className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
+              statusFilter === 'Closed' ? 'bg-white border-[#6B7280] ring-1 ring-[#6B7280]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
+            }`}
+          >
+            <p className="text-lg sm:text-xl font-bold text-gray-900 tnum">{stats.closedCount}</p>
+            <p className="text-xs text-gray-500 font-medium mt-1">Closed</p>
+          </button>
+          
+          <Link 
+            href="/history"
+            className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] hover:border-[#131924] shadow-sm flex-1 min-w-0 text-center transition-all cursor-pointer block"
+          >
+            <p className={`text-base sm:text-lg font-bold truncate tnum ${
+              stats.netBalance > 0 
+                ? 'text-[#DC2626]' 
+                : stats.netBalance < 0 
+                ? 'text-[#16A34A]' 
+                : 'text-gray-900'
+            }`}>
+              {stats.balanceLabel}
+            </p>
+            <p className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1">Outstanding</p>
+          </Link>
+        </div>
+      )}
 
       {/* Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
@@ -97,26 +111,57 @@ export default function DashboardClient({ initialaccounts, stats }: DashboardCli
         </div>
       </div>
 
-      {/* accounts Grid */}
-      {filteredaccounts.length === 0 ? (
+      {/* Main Grid for Folders and Accounts */}
+      {!isFolderView && filteredFolders.length === 0 && displayAccounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
           <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
             <Users size={24} strokeWidth={1.75} />
           </div>
           <p className="text-base font-medium text-gray-700">
-            {searchQuery !== '' ? 'No matches found' : `No ${statusFilter.toLowerCase()} accounts yet`}
+            {searchQuery !== '' ? 'No matches found' : `No ${statusFilter.toLowerCase()} accounts or folders yet`}
           </p>
           <p className="text-sm text-gray-400 mt-1">
-            {searchQuery !== '' ? 'Try a different name, area, or phone number.' : 'New Pages you add will show up here.'}
+            {searchQuery !== '' ? 'Try a different search term.' : 'Items you add will show up here.'}
           </p>
+        </div>
+      ) : isFolderView && displayAccounts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
+          <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
+            <Folder size={24} strokeWidth={1.75} />
+          </div>
+          <p className="text-base font-medium text-gray-700">Folder is empty</p>
+          <p className="text-sm text-gray-400 mt-1">Move an account here by editing it.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          
+          {/* Render Folders First (Only on Home Screen) */}
+          {!isFolderView && filteredFolders.map(folder => (
+            <Link href={`/folder/${folder.id}`} key={folder.id} className="block group">
+              <div className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-sm group-hover:border-[#131924] group-hover:shadow-md transition-all h-full flex flex-col justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-3 bg-white rounded-lg shadow-sm border border-[#E5E7EB]">
+                    <Folder size={24} className="text-[#131924]" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-lg text-gray-800">{folder.name}</h2>
+                    <p className="text-xs text-gray-500 font-medium mt-0.5">{folder.accountCount} Accounts</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-1 text-xs font-semibold pt-3 border-t border-gray-200">
+                  <span className="text-[#16A34A]">Credit {new Intl.NumberFormat('en-PK').format(folder.totalCredit)}</span>
+                  <span className="text-[#DC2626]">Debit {new Intl.NumberFormat('en-PK').format(folder.totalDebit)}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+
+          {/* Render Accounts */}
           {(() => {
-            // Instantiate exactly ONCE before the loop for better performance
             const pkrFormatter = new Intl.NumberFormat('en-PK')
             
-            return filteredaccounts.map((account) => {
+            return displayAccounts.map((account) => {
               const bal = account.balance || 0
               const formattedBal = pkrFormatter.format(Math.abs(bal))
               

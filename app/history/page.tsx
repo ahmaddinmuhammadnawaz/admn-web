@@ -48,7 +48,7 @@ export default async function HistoryPage() {
             >
               <ArrowLeft size={22} strokeWidth={2.25} />
             </Link>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">Outstanding History</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Outstanding</h1>
           </div>
 
           <div className="flex flex-col gap-3 sm:gap-4">
@@ -79,7 +79,7 @@ export default async function HistoryPage() {
       {/* Print-only header */}
       <div className="print-only px-4 sm:px-6 pt-6 max-w-5xl mx-auto w-full">
         <h1 className="text-2xl font-extrabold mb-3">Ahmad Din Muhammad Nawaz Commission Shop</h1>
-        <h1 className="text-xl font-bold mb-1">Outstanding History Summary</h1>
+        <h1 className="text-xl font-bold mb-1">Outstanding</h1>
         <p className="text-sm text-gray-600 mb-4">
           Total Debit: {formattedTotalDebit} &nbsp;|&nbsp; Total Credit: {formattedTotalCredit}
         </p>

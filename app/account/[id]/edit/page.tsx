@@ -13,12 +13,11 @@ export default async function EditaccountPage({
   const { id } = await params
   const supabase = await createClient()
 
-  // Fetch the existing account data to pre-fill the form
-  const { data: account, error } = await supabase
-    .from('accounts')
-    .select('*')
-    .eq('id', id)
-    .single()
+  // Fetch the existing account data and all available folders
+  const [ { data: account, error }, { data: folders } ] = await Promise.all([
+    supabase.from('accounts').select('*').eq('id', id).single(),
+    supabase.from('folders').select('id, name').order('name')
+  ])
 
   if (error || !account) {
     notFound()
@@ -79,6 +78,22 @@ export default async function EditaccountPage({
               <input name="crop" type="text" defaultValue={account.crop || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
+
+          {/* NEW: Folder Selection Dropdown pre-filled with the current folder */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Folder</label>
+            <select 
+              name="folder_id" 
+              defaultValue={account.folder_id || "none"}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:ring-1 focus:ring-[#131924] focus:outline-none"
+            >
+              <option value="none">No Folder (Home Screen)</option>
+              {folders?.map(folder => (
+                <option key={folder.id} value={folder.id}>{folder.name}</option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
             <textarea 

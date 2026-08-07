@@ -1,9 +1,15 @@
+import { createClient } from '@/utils/supabase/server'
 import { addaccount } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { SubmitButton } from '@/components/SubmitButton'
 
-export default function AddaccountPage() {
+export default async function AddaccountPage() {
+  const supabase = await createClient()
+  
+  // Fetch available folders to populate the dropdown
+  const { data: folders } = await supabase.from('folders').select('id, name').order('name')
+
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
@@ -46,6 +52,7 @@ export default function AddaccountPage() {
               <input name="reference_person" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
@@ -56,6 +63,22 @@ export default function AddaccountPage() {
               <input name="crop" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
+
+          {/* NEW: Folder Selection Dropdown */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Folder</label>
+            <select 
+              name="folder_id" 
+              defaultValue="none"
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:ring-1 focus:ring-[#131924] focus:outline-none"
+            >
+              <option value="none">No Folder (Home Screen)</option>
+              {folders?.map(folder => (
+                <option key={folder.id} value={folder.id}>{folder.name}</option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
             <textarea 
