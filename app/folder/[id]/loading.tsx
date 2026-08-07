@@ -37,7 +37,7 @@ export default function FolderLoading() {
         </div>
 
         {/* Accounts Grid Skeleton */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="p-4 sm:p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-sm h-[120px] flex flex-col justify-between gap-4">
               

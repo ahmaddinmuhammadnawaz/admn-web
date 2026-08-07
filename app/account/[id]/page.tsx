@@ -148,7 +148,7 @@ export default async function accountLedger({
           {/* Row 2: account info (left) + Balance/Add Entry (right) */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div className="min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 truncate">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 break-words">
                 {account.name}
               </h1>
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-white/60">

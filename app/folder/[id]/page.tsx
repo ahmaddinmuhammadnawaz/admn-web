@@ -37,14 +37,14 @@ export default async function FolderPage({ params }: { params: Promise<{ id: str
   return (
     <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
       <div className="bg-[#131924] w-full safe-top">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-white min-w-0 pr-4">
-            <Link href="/" className="hover:text-gray-300 shrink-0">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex items-start justify-between gap-3">
+          <div className="flex items-start gap-4 text-white min-w-0 pr-4">
+            <Link href="/" className="hover:text-gray-300 shrink-0 mt-0.5">
               <ArrowLeft size={24} />
             </Link>
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <Folder size={24} className="text-white/80 shrink-0" />
-              <h1 className="text-lg sm:text-xl font-bold truncate">{folder.name}</h1>
+            <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+              <Folder size={24} className="text-white/80 shrink-0 mt-0.5" />
+              <h1 className="text-lg sm:text-xl font-bold break-words">{folder.name}</h1>
             </div>
           </div>
           
