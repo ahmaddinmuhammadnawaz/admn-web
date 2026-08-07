@@ -25,15 +25,17 @@ export async function addaccount(formData: FormData) {
     throw new Error('Failed to add Page')
   }
   revalidatePath('/')
-  redirect(`/account/${data.id}`)
+  return data.id // RETURN the ID instead of redirecting
 }
 export async function addLedgerEntry(accountId: string, formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
-  const type = formData.get('type') as string // 'debit' or 'credit'
+
+  const type = formData.get('type') as string
   const amount = parseInt(formData.get('amount') as string, 10) || 0
   const isDebit = type === 'Debit'
+
   const { error } = await supabase.from('ledger_entries').insert({
     account_id: accountId,
     debit: isDebit ? amount : 0,
@@ -43,12 +45,14 @@ export async function addLedgerEntry(accountId: string, formData: FormData) {
     reference: (formData.get('reference') as string) || null,
     entry_date: (formData.get('entry_date') as string) || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' }),
   })
+
   if (error) {
     console.error('Error adding entry:', error)
     throw new Error('Failed to add entry')
   }
+
+  // Revalidate the ledger path data cache
   revalidatePath(`/account/${accountId}`)
-  redirect(`/account/${accountId}`)
 }
 export async function signOut() {
   const supabase = await createClient()
@@ -143,7 +147,6 @@ export async function editLedgerEntry(entryId: string, accountId: string, formDa
   }
   // Refresh the ledger page and redirect back to it
   revalidatePath(`/account/${accountId}`)
-  redirect(`/account/${accountId}`)
 }
 export async function deleteAccount(accountId: string) {
   const supabase = await createClient()
@@ -194,7 +197,6 @@ export async function editaccount(accountId: string, formData: FormData) {
   // Refresh the dashboard and redirect to the account's ledger
   revalidatePath('/')
   revalidatePath(`/account/${accountId}`)
-  redirect(`/account/${accountId}`)
 }
 export async function exportData() {
   const supabase = await createClient()
@@ -299,10 +301,11 @@ export async function manageFolderAccounts(folderId: string, selectedAccountIds:
   if (!user) throw new Error('Unauthorized')
   if (selectedAccountIds.length > 0) {
     // 1. Remove folder_id from accounts that are CURRENTLY in this folder but were UNCHECKED
-    await supabase.from('accounts')
-      .update({ folder_id: null })
-      .eq('folder_id', folderId)
-      .not('id', 'in', `(${selectedAccountIds.join(',')})`)
+      await supabase.from('accounts')
+        .update({ folder_id: null })
+        .eq('folder_id', folderId)
+        // FIX: Pass the array directly instead of a joined SQL-style string
+        .not('id', 'in', selectedAccountIds)
     // 2. Add this folder_id to all CHECKED accounts
     await supabase.from('accounts')
       .update({ folder_id: folderId })
@@ -355,19 +358,22 @@ export async function editFolder(folderId: string, formData: FormData) {
 
 }
 export async function deleteFolder(folderId: string) {
-
   try {
-
     const supabase = await createClient()
-
     const { data: { user } } = await supabase.auth.getUser()
-
     if (!user) return { error: 'You must be logged in to do this.' }
-    const { error } = await supabase
 
+    // explicitly detach all accounts so they return to the home screen
+    await supabase
+      .from('accounts')
+      .update({ folder_id: null })
+      .eq('folder_id', folderId)
+
+    const { error } = await supabase
       .from('folders')
       .delete()
       .eq('id', folderId)
+
     if (error) {
       console.error('Database Error:', error)
       return { error: 'Failed to delete the folder. Please try again.' }
@@ -379,4 +385,4 @@ export async function deleteFolder(folderId: string) {
     console.error('Unexpected Error:', err)
     return { error: 'An unexpected error occurred.' }
   }
-} 
+}

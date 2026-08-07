@@ -23,8 +23,13 @@ export default async function HistoryPage() {
   // Only loop through the aggregated rows (e.g., 50 accounts instead of 5,000 entries)
   const summaryList = summaries || []
   summaryList.forEach(summary => {
-    totalDebit += Number(summary.total_debit) || 0
-    totalCredit += Number(summary.total_credit) || 0
+    // FIX: Base outstanding totals on the net balance, not lifetime volume
+    const bal = Number(summary.balance) || 0
+    if (bal > 0) {
+      totalDebit += bal
+    } else if (bal < 0) {
+      totalCredit += Math.abs(bal)
+    }
   })
 
   // Initialize formatter once for performance

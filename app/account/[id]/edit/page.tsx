@@ -1,11 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
-import { editaccount } from '@/app/actions'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { SubmitButton } from '@/components/SubmitButton'
+import EditAccountForm from './EditAccountForm'
 
-export default async function EditaccountPage({
+export default async function EditAccountPage({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -23,9 +22,6 @@ export default async function EditaccountPage({
     notFound()
   }
 
-  // Bind the account ID to the server action
-  const updateaccountWithId = editaccount.bind(null, id)
-
   return (
     <main className="bg-[#F7F8FA] min-h-screen p-4 sm:p-6 md:p-10 flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
@@ -41,71 +37,13 @@ export default async function EditaccountPage({
           <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Edit Info</h1>
         </div>
 
-        <form action={updateaccountWithId} className="flex flex-col gap-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-            <input name="name" type="text" required defaultValue={account.name} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-          </div>
+        {/* Render the Client Component Form */}
+        <EditAccountForm 
+          accountId={id}
+          account={account}
+          folders={folders || []}
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Father Name</label>
-              <input name="father_name" type="text" defaultValue={account.father_name || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input name="phone" type="tel" defaultValue={account.phone || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
-              <input name="area" type="text" defaultValue={account.area || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Person</label>
-              <input name="reference_person" type="text" defaultValue={account.reference_person || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
-              <input name="cnic" type="text" defaultValue={account.cnic || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Main Crop</label>
-              <input name="crop" type="text" defaultValue={account.crop || ''} className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-
-          {/* NEW: Folder Selection Dropdown pre-filled with the current folder */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Folder</label>
-            <select 
-              name="folder_id" 
-              defaultValue={account.folder_id || "none"}
-              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:ring-1 focus:ring-[#131924] focus:outline-none"
-            >
-              <option value="none">No Folder (Home Screen)</option>
-              {folders?.map(folder => (
-                <option key={folder.id} value={folder.id}>{folder.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
-            <textarea 
-              name="note" 
-              rows={3} 
-              defaultValue={account.note || ''}
-              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-none"
-            ></textarea>
-          </div>
-
-         <SubmitButton>Save Changes</SubmitButton>
-        </form>
       </div>
     </main>
   )

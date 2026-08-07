@@ -1,8 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
-import { addaccount } from '@/app/actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { SubmitButton } from '@/components/SubmitButton'
+import AddAccountForm from './AddAccountForm'
 
 export default async function AddaccountPage() {
   const supabase = await createClient()
@@ -25,71 +24,8 @@ export default async function AddaccountPage() {
           <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Account</h1>
         </div>
 
-        <form action={addaccount} className="flex flex-col gap-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-            <input name="name" type="text" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Father Name</label>
-              <input name="father_name" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input name="phone" type="tel" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
-              <input name="area" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Person</label>
-              <input name="reference_person" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">CNIC</label>
-              <input name="cnic" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Main Crop</label>
-              <input name="crop" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-
-          {/* NEW: Folder Selection Dropdown */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Folder</label>
-            <select 
-              name="folder_id" 
-              defaultValue="none"
-              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white focus:ring-1 focus:ring-[#131924] focus:outline-none"
-            >
-              <option value="none">No Folder (Home Screen)</option>
-              {folders?.map(folder => (
-                <option key={folder.id} value={folder.id}>{folder.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Additional Note / Remarks</label>
-            <textarea 
-              name="note" 
-              rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-none"
-            ></textarea>
-          </div>
-
-         <SubmitButton>Save Account</SubmitButton>
-        </form>
+        <AddAccountForm folders={folders || []} />
+        
       </div>
     </main>
   )

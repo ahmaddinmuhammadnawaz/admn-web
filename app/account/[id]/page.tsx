@@ -58,7 +58,10 @@ export default async function accountLedger({
         .lt('entry_date', from)
 
       pastEntries?.forEach(e => {
-        pastBalance += (Number(e.debit) || 0) - (Number(e.credit) || 0)
+        const d = Number(e.debit) || 0
+        const c = Number(e.credit) || 0
+        // FIX: Round at each step to prevent floating-point drift accumulation
+        pastBalance = Math.round((pastBalance + d - c) * 100) / 100
       })
 
       entriesQuery = entriesQuery.gte('entry_date', from)
@@ -97,8 +100,8 @@ export default async function accountLedger({
     }
   })
 
-  // 5. After the math is done, filter out the years the user explicitly unchecked
-  const processedEntries = selectedYear === 'All' 
+  // 5. After the math is done, filter out the years only if a custom date range isn't active
+  const processedEntries = (selectedYear === 'All' || hasDateRange) 
     ? allProcessed 
     : allProcessed.filter((entry) => {
         const entryYear = entry.entry_date.split('-')[0]

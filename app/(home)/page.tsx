@@ -45,14 +45,15 @@ export default async function Home() {
     }
   }) || []
 
-  // Calculate Folder Stats (Debit, Credit, and Account Count)
+ // Calculate Folder Stats (Debit, Credit, and Account Count)
   const foldersWithStats = folders?.map(folder => {
     let totalDebit = 0
     let totalCredit = 0
     let accountCount = 0
 
     accountsWithBalance.forEach(account => {
-      if (account.folder_id === folder.id) {
+      // FIX: Only count and sum balances for 'Active' accounts
+      if (account.folder_id === folder.id && account.status === 'Active') {
         accountCount++
         if (account.balance > 0) totalDebit += account.balance
         if (account.balance < 0) totalCredit += Math.abs(account.balance)
@@ -61,8 +62,9 @@ export default async function Home() {
 
     return {
       ...folder,
-      totalDebit,
-      totalCredit,
+      // FIX: Round the final folder totals
+      totalDebit: Math.round(totalDebit * 100) / 100, 
+      totalCredit: Math.round(totalCredit * 100) / 100,
       accountCount
     }
   }) || []
@@ -77,6 +79,8 @@ export default async function Home() {
       netBalance += account.balance
     }
   })
+
+  netBalance = Math.round(netBalance * 100) / 100
 
   const balanceLabel = netBalance === 0
     ? '0'

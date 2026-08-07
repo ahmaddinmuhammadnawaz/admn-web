@@ -20,10 +20,12 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('Active')
 
-  // Filter the accounts based on search query and tab status
+  // Filter the accounts based on search query and tab status.
+  // Applied in folder view too — folder view has no Active/Closed toggle so it
+  // stays on the 'Active' default, meaning a closed account drops out of its
+  // folder's listing the same way it drops out of the home screen's Active list.
   const filteredaccounts = initialaccounts.filter((account) => {
-    // Only apply the Active/Closed filter if we are NOT in folder view
-    if (!isFolderView && account.status !== statusFilter) return false
+    if (account.status !== statusFilter) return false
     
     if (searchQuery === '') return true
 
@@ -37,13 +39,22 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
     return nameMatch || areaMatch || phoneMatch || refMatch || fatherMatch
   })
 
-  // NEW: If we are in folder view, show all filtered accounts. 
-  // If on the home screen, only show "loose" accounts that don't belong to a folder.
-  const displayAccounts = isFolderView ? filteredaccounts : filteredaccounts.filter(a => !a.folder_id)
+  // NEW: If we are in folder view, show all filtered accounts.
+  // On the home screen: Active tab only shows "loose" accounts (folder accounts appear inside their folder card).
+  // Closed tab surfaces ALL closed accounts directly, including ones that belong to a folder,
+  // so a closed account is never hidden away inside a folder the user isn't looking at.
+  const displayAccounts = isFolderView
+    ? filteredaccounts
+    : statusFilter === 'Closed'
+      ? filteredaccounts
+      : filteredaccounts.filter(a => !a.folder_id)
 
   const filteredFolders = folders.filter(folder => 
     searchQuery === '' || folder.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  // Folders only make sense on the Active tab — they aren't accounts, so they don't belong in the Closed list
+  const shouldShowFolders = !isFolderView && statusFilter === 'Active' && filteredFolders.length > 0
 
   return (
     <>
@@ -112,7 +123,7 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
       </div>
 
       {/* Main Grid for Folders and Accounts */}
-      {!isFolderView && filteredFolders.length === 0 && displayAccounts.length === 0 ? (
+      {!isFolderView && !shouldShowFolders && displayAccounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center text-[#6B7280]">
           <div className="w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mb-4">
             <Users size={24} strokeWidth={1.75} />
@@ -135,7 +146,7 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
       ) : (
         <>
           {/* Folders Grid - separate section so folder cards never stretch account cards (or vice versa) */}
-          {!isFolderView && filteredFolders.length > 0 && (
+          {shouldShowFolders && (
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 mb-6">
               {filteredFolders.map(folder => (
                 <Link href={`/folder/${folder.id}`} key={folder.id} className="block group">
@@ -161,7 +172,7 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
           )}
 
           {/* Divider - only shown when there are folders above */}
-          {!isFolderView && filteredFolders.length > 0 && (
+          {shouldShowFolders && (
             <hr className="border-t border-[#E5E7EB] mb-6" />
           )}
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { CalendarRange, X, Check } from 'lucide-react'
 
 function formatShort(dateStr: string) {
@@ -18,6 +18,7 @@ export default function DateRangeFilter({
 }) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [open, setOpen] = useState(false)
   const [from, setFrom] = useState(initialFrom || '')
   const [to, setTo] = useState(initialTo || '')
@@ -81,9 +82,15 @@ export default function DateRangeFilter({
   }, [open])
 
   const apply = () => {
-    const params = new URLSearchParams()
+    // FIX: Clone existing params instead of starting blank
+    const params = new URLSearchParams(searchParams.toString()) 
+    
     if (from) params.set('from', from)
+    else params.delete('from')
+    
     if (to) params.set('to', to)
+    else params.delete('to')
+
     router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
     setOpen(false)
   }

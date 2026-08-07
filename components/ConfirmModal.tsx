@@ -71,6 +71,10 @@ export function ConfirmModal({
                 value={typedWord}
                 onChange={(e) => setTypedWord(e.target.value)}
                 placeholder={requireWord}
+                // FIX 1: Prevent the Enter key from bypassing the validation and submitting the form
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') e.preventDefault()
+                }}
                 className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#DC2626] focus:border-[#DC2626] focus:outline-none text-black"
                 autoComplete="off"
               />
@@ -81,6 +85,7 @@ export function ConfirmModal({
         {/* Footer */}
         <div className="p-5 pt-0 flex gap-3">
           <button
+            type="button" // FIX 2: Prevent the Cancel button from acting as a form submit button
             onClick={onClose}
             disabled={isCurrentlyLoading}
             className="flex-1 px-4 py-3 rounded-xl font-bold text-[#6B7280] bg-[#F7F8FA] hover:bg-gray-200 transition-colors disabled:opacity-50"
@@ -89,13 +94,13 @@ export function ConfirmModal({
           </button>
           
           <button
+            type="button" // FIX 3: Prevent double-submission conflicts
             onClick={onConfirm}
             disabled={isButtonDisabled}
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
               isDestructive ? 'bg-[#DC2626] hover:bg-red-700' : 'bg-[#131924] hover:bg-gray-800'
             }`}
           >
-            {/* 5. Show spinner if loading */}
             {isCurrentlyLoading && <Loader2 size={18} className="animate-spin" />}
             {isCurrentlyLoading ? 'Processing...' : confirmText}
           </button>

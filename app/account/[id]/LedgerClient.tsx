@@ -59,9 +59,9 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
       const refMatch = (entry.reference || '').toLowerCase().includes(query)
       const pageMatch = (entry.page_no || '').toLowerCase().includes(query)
 
-      // Format date manually to match the exact visual table layout (e.g., 31/8)
-      const dateObj = new Date(entry.entry_date)
-      const dateStr = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`
+      // Format date manually by splitting the string to prevent UTC shifts
+      const [year, month, day] = entry.entry_date.split('-')
+      const dateStr = `${parseInt(day)}/${parseInt(month)}`
       const dateMatch = dateStr.includes(query)
 
       return detailMatch || refMatch || pageMatch || dateMatch
@@ -168,7 +168,10 @@ export default function LedgerClient({ initialEntries }: { initialEntries: any[]
                         <tr key={entry.id} className="hover:bg-gray-50 transition-colors divide-x divide-[#E5E7EB]">
                           {/* Date */}
                           <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap tnum">
-                            {`${new Date(entry.entry_date).getDate()}/${new Date(entry.entry_date).getMonth() + 1}`}
+                            {(() => {
+                              const [y, m, d] = entry.entry_date.split('-')
+                              return `${parseInt(d)}/${parseInt(m)}`
+                            })()}
                           </td>
 
                           {/* Page No */}
