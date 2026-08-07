@@ -57,19 +57,8 @@ export default async function AddEntryPage({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
-              <input name="amount" type="number" step="1" max="9999999999" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Page No.</label>
               <input name="page_no" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
-              <input name="reference" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
             </div>
           </div>
 
@@ -80,6 +69,17 @@ export default async function AddEntryPage({
               rows={3}
               className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y" 
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
+              <input name="reference" type="text" className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
+              <input name="amount" type="number" step="1" max="9999999999" required className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none" />
+            </div>
           </div>
 
           <SubmitButton>Save Entry</SubmitButton>

@@ -58,50 +58,25 @@ export default async function EditEntryPage({
             </label>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
-              <input
-                name="entry_date"
-                type="date"
-                required
-                defaultValue={entry.entry_date}
-                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
-              <input
-                name="amount"
-                type="number"
-                step="1"
-                max="9999999999"
-                required
-                defaultValue={currentAmount}
-                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+            <input
+              name="entry_date"
+              type="date"
+              required
+              defaultValue={entry.entry_date}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Page No.</label>
-              <input
-                name="page_no"
-                type="text"
-                defaultValue={entry.page_no || ''}
-                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
-              <input
-                name="reference"
-                type="text"
-                defaultValue={entry.reference || ''}
-                className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Page No.</label>
+            <input
+              name="page_no"
+              type="text"
+              defaultValue={entry.page_no || ''}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+            />
           </div>
 
           <div>
@@ -111,6 +86,29 @@ export default async function EditEntryPage({
               rows={3}
               defaultValue={entry.detail || ''}
               className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none resize-y"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Reference</label>
+            <input
+              name="reference"
+              type="text"
+              defaultValue={entry.reference || ''}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Amount*</label>
+            <input
+              name="amount"
+              type="number"
+              step="1"
+              max="9999999999"
+              required
+              defaultValue={currentAmount}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none"
             />
           </div>
 
