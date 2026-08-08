@@ -21,8 +21,8 @@ export async function addaccount(formData: FormData) {
     status: 'Active',
   }).select().single()
   if (error) {
-    console.error('Error adding Page:', error)
-    throw new Error('Failed to add Page')
+    console.error('Error adding Account:', error)
+    throw new Error('Failed to add Account')
   }
   revalidatePath('/')
   return data.id // RETURN the ID instead of redirecting
@@ -300,12 +300,12 @@ export async function manageFolderAccounts(folderId: string, selectedAccountIds:
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   if (selectedAccountIds.length > 0) {
-    // 1. Remove folder_id from accounts that are CURRENTLY in this folder but were UNCHECKED
-      await supabase.from('accounts')
-        .update({ folder_id: null })
-        .eq('folder_id', folderId)
-        // FIX: Pass the array directly instead of a joined SQL-style string
-        .not('id', 'in', selectedAccountIds)
+      // 1. Remove folder_id from accounts that are CURRENTLY in this folder but were UNCHECKED
+        await supabase.from('accounts')
+          .update({ folder_id: null })
+          .eq('folder_id', folderId)
+          // Reverted to standard PostgREST syntax for .not()
+          .not('id', 'in', `(${selectedAccountIds.join(',')})`)
     // 2. Add this folder_id to all CHECKED accounts
     await supabase.from('accounts')
       .update({ folder_id: folderId })
