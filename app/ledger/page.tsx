@@ -111,7 +111,8 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-            <Link href="/settings" className="text-white/70 hover:text-white transition-colors" title="Settings">
+            <Link href="/settings" className="text-white/70 hover:text-white transition-colors flex items-center gap-2" title="Settings">
+              <Settings size={20} className="md:hidden" />
               <span className="hidden md:inline text-sm font-medium">Settings</span>
             </Link>
 

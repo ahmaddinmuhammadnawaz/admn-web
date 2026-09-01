@@ -10,8 +10,14 @@ export default function GlobalLoading() {
             <div className="w-10 h-10 shrink-0 rounded-xl bg-white/10 animate-pulse"></div>
             <div className="h-6 w-32 bg-white/10 rounded-md animate-pulse"></div>
           </div>
+          
           <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-            <div className="w-16 h-5 bg-white/10 rounded-md animate-pulse hidden md:block"></div>
+            {/* Settings Link Skeleton */}
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-white/10 rounded animate-pulse md:hidden"></div>
+              <div className="w-16 h-5 bg-white/10 rounded-md animate-pulse hidden md:block"></div>
+            </div>
+            
             <div className="w-px h-5 bg-white/20 hidden sm:block"></div>
             <div className="w-6 h-6 bg-white/10 rounded-full animate-pulse"></div>
           </div>

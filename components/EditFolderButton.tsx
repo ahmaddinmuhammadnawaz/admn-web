@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Pencil, X, AlertCircle } from 'lucide-react'
+import { Pencil, X, AlertCircle, Loader2 } from 'lucide-react'
 import { editFolder } from '@/app/actions'
 import { SubmitButton } from './SubmitButton'
 
@@ -67,7 +67,14 @@ export default function EditFolderButton({ folderId, currentName }: { folderId: 
                   className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] focus:outline-none text-gray-900" 
                 />
               </div>
-              <SubmitButton>Save Changes</SubmitButton>
+              <button
+                type="submit"
+                disabled={isPending}
+                className="w-full bg-[#131924] text-white font-bold py-3.5 sm:py-4 rounded-xl mt-2 hover:bg-gray-800 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isPending && <Loader2 size={18} className="animate-spin" />}
+                {isPending ? 'Saving...' : 'Save Changes'}
+              </button>
             </form>
           </div>
         </div>

@@ -34,6 +34,15 @@ export default function LedgerClient({
     } else {
       setIsDebit(true)
     }
+
+    // Auto-resize detail textarea when editing an entry with long text
+    setTimeout(() => {
+      const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+      if (textarea) {
+        textarea.style.height = '42px'
+        textarea.style.height = textarea.scrollHeight + 'px'
+      }
+    }, 0)
   }, [editingEntry])
 
   const handleSubmit = (formData: FormData) => {
@@ -46,14 +55,19 @@ export default function LedgerClient({
         setIsDebit(true) // Reset toggle after adding
       }
       formRef.current?.reset()
+      // Reset textarea height after submit
+      const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+      if (textarea) textarea.style.height = '42px'
     })
   }
 
   const cancelEdit = () => {
     setEditingEntry(null)
     formRef.current?.reset()
+    // Reset textarea height
+    const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+    if (textarea) textarea.style.height = '42px'
   }
-  // -------------------------
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('All')
@@ -183,7 +197,16 @@ export default function LedgerClient({
           {/* Flex-1 but strictly prevented from shrinking below 200px */}
           <div className="w-full lg:flex-1 lg:min-w-[200px]">
             <label className="block text-xs font-bold text-gray-500 mb-1">Detail</label>
-            <textarea name="detail" rows={1} defaultValue={editingEntry?.detail || ""} className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] bg-white text-sm resize-y h-[42px] min-h-[42px]" />
+            <textarea 
+              name="detail" 
+              rows={1} 
+              defaultValue={editingEntry?.detail || ""} 
+              onInput={(e) => {
+                e.currentTarget.style.height = '42px'
+                e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'
+              }}
+              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] bg-white text-sm resize-none overflow-hidden min-h-[42px] transition-all duration-75" 
+            />
           </div>
           
           {/* Allowed to shrink */}
@@ -275,8 +298,8 @@ export default function LedgerClient({
                             })()}
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-500">{entry.page_no || ''}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 max-w-[250px] truncate" title={entry.detail}>{entry.detail || ''}</td>
-                          <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate" title={entry.reference}>{entry.reference || ''}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] break-words whitespace-pre-wrap" title={entry.detail}>{entry.detail || ''}</td>
+                          <td className="px-4 py-3 text-sm text-gray-500 min-w-[120px] break-words whitespace-pre-wrap" title={entry.reference}>{entry.reference || ''}</td>
                           <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">{formattedDebit}</td>
                           <td className="px-4 py-3 text-sm text-right font-semibold text-[#16A34A] tnum whitespace-nowrap">{formattedCredit}</td>
                           <td className="px-4 py-3 text-sm text-right whitespace-nowrap">
@@ -317,25 +340,31 @@ export default function LedgerClient({
             <div className="p-4 border-t border-[#E5E7EB] bg-[#F7F8FA] flex items-center justify-between no-print">
               <button
                 onClick={() => {
-                  const params = new URLSearchParams(window.location.search);
-                  params.set('page', (currentPage - 1).toString());
-                  router.push(`?${params.toString()}`);
+                  startTransition(() => {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('page', (currentPage - 1).toString());
+                    router.push(`?${params.toString()}`);
+                  })
                 }}
-                disabled={currentPage <= 1}
-                className="px-4 py-2 text-sm font-bold bg-white border border-[#E5E7EB] rounded-xl text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={currentPage <= 1 || isPending}
+                className="px-4 py-2 text-sm font-bold bg-white border border-[#E5E7EB] rounded-xl text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
               >
+                {isPending && currentPage > 1 && <Loader2 size={14} className="animate-spin" />}
                 Previous
               </button>
               <span className="text-sm font-medium text-gray-500">Page {currentPage}</span>
               <button
                 onClick={() => {
-                  const params = new URLSearchParams(window.location.search);
-                  params.set('page', (currentPage + 1).toString());
-                  router.push(`?${params.toString()}`);
+                  startTransition(() => {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('page', (currentPage + 1).toString());
+                    router.push(`?${params.toString()}`);
+                  })
                 }}
-                disabled={!hasNextPage}
-                className="px-4 py-2 text-sm font-bold bg-white border border-[#E5E7EB] rounded-xl text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={!hasNextPage || isPending}
+                className="px-4 py-2 text-sm font-bold bg-white border border-[#E5E7EB] rounded-xl text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
               >
+                {isPending && hasNextPage && <Loader2 size={14} className="animate-spin" />}
                 Next
               </button>
             </div>

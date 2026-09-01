@@ -78,6 +78,15 @@ export default function DailyEntryClient({ page, entries, accounts }: { page: an
     } else {
       setIsDebit(true)
     }
+    
+    // Auto-resize detail textarea when editing an entry with long text
+    setTimeout(() => {
+      const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+      if (textarea) {
+        textarea.style.height = '42px'
+        textarea.style.height = textarea.scrollHeight + 'px'
+      }
+    }, 0)
   }, [editingEntry])
 
   const totalDebit = entries.reduce((sum, e) => sum + Number(e.debit), 0)
@@ -102,6 +111,9 @@ export default function DailyEntryClient({ page, entries, accounts }: { page: an
         setSelectedAccountId('')
         setAccountSearch('')
       }
+      // Reset textarea height after submit
+      const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+      if (textarea) textarea.style.height = '42px'
     })
   }
 
@@ -110,6 +122,9 @@ export default function DailyEntryClient({ page, entries, accounts }: { page: an
     setSelectedAccountId('')
     setAccountSearch('')
     formRef.current?.reset()
+    // Reset textarea height
+    const textarea = formRef.current?.querySelector('textarea[name="detail"]') as HTMLTextAreaElement
+    if (textarea) textarea.style.height = '42px'
   }
 
   return (
@@ -170,7 +185,16 @@ export default function DailyEntryClient({ page, entries, accounts }: { page: an
           
           <div className="w-full lg:flex-1">
             <label className="block text-xs font-bold text-gray-500 mb-1">Detail</label>
-            <textarea name="detail" rows={1} defaultValue={editingEntry?.detail || ""} className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] bg-white text-sm resize-y h-[42px] min-h-[42px]" />
+            <textarea 
+              name="detail" 
+              rows={1} 
+              defaultValue={editingEntry?.detail || ""} 
+              onInput={(e) => {
+                e.currentTarget.style.height = '42px'
+                e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'
+              }}
+              className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] focus:ring-1 focus:ring-[#131924] bg-white text-sm resize-none overflow-hidden min-h-[42px] transition-all duration-75" 
+            />
           </div>
           
           <div className="w-full lg:w-[12%]">
@@ -250,10 +274,10 @@ export default function DailyEntryClient({ page, entries, accounts }: { page: an
                         entry.accounts.name
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 max-w-[250px] truncate" title={entry.detail}>
+                    <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] break-words whitespace-pre-wrap" title={entry.detail}>
                       {entry.detail || ''}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500 max-w-[140px] truncate">{entry.reference || ''}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500 min-w-[120px] break-words whitespace-pre-wrap">{entry.reference || ''}</td>
                     <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">
                       {entry.debit > 0 ? pkrFormatter.format(entry.debit) : ''}
                     </td>

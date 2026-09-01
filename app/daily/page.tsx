@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Search, FileText, Receipt, Settings } from 'lucide-react'
+import { ArrowLeft, Search, FileText, Receipt, Settings, ClipboardList } from 'lucide-react'
 import { LogoutButton } from '@/components/LogoutButton'
 import { signOut } from '@/app/actions'
 import CreateDailyFab from '@/components/CreateDailyFab'
@@ -20,9 +20,9 @@ export default async function DailyDashboard({ searchParams }: { searchParams: P
 
   const filteredPages = pages?.filter(p => {
     if (!q) return true;
-    
+
     const query = q.toLowerCase().trim()
-    
+
     // Check if the query consists ONLY of numbers
     const isPureNumber = /^\d+$/.test(query)
 
@@ -37,19 +37,20 @@ export default async function DailyDashboard({ searchParams }: { searchParams: P
     const formatSlash = `${day}/${month}/${year}`
 
     return (
-      formatDash.includes(query) || 
-      formatSlash.includes(query) || 
+      formatDash.includes(query) ||
+      formatSlash.includes(query) ||
       p.work_date.includes(query)
     )
   })
 
   return (
-    <main className="bg-[#F7F8FA] min-h-screen flex flex-col relative pb-28">
+   <main className="bg-[#F7F8FA] min-h-screen flex flex-col relative pb-28">
       
       {/* --- STANDARD DARK TOP BAR --- */}
-<div className="bg-[#131924] w-full safe-top shadow-md relative z-50">
+      <div className="bg-[#131924] w-full safe-top shadow-md relative z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex justify-between items-center text-white">
           
+          {/* LEFT SIDE: Back Button & Logo */}
           <div className="flex items-center gap-3 min-w-0">
             <Link href="/" className="text-white/80 hover:text-white transition-colors shrink-0 p-1 -ml-1">
               <ArrowLeft size={22} strokeWidth={2.25} />
@@ -66,23 +67,27 @@ export default async function DailyDashboard({ searchParams }: { searchParams: P
             <span className="font-bold text-lg tracking-wide truncate">Entry Book</span>
           </div>
 
+          {/* RIGHT SIDE: REPLACE THIS ENTIRE BLOCK WITH YOUR SNIPPET */}
           <div className="flex items-center gap-4 sm:gap-6 shrink-0">
             <Link href="/history?source=daily" className="text-white/70 hover:text-white transition-colors flex items-center gap-2" title="Outstanding Balances">
-              
+              <ClipboardList size={20} className="md:hidden" />
               <span className="hidden md:inline text-sm font-medium">Outstanding</span>
             </Link>
             
             <Link href="/settings" className="text-white/70 hover:text-white transition-colors flex items-center gap-2" title="Settings">
-              
+              <Settings size={20} className="md:hidden" />
               <span className="hidden md:inline text-sm font-medium">Settings</span>
             </Link>
 
+            {/* Keep the divider and logout button that come right after it */}
             <div className="w-px h-5 bg-white/20 hidden sm:block"></div>
 
             <form action={signOut}>
               <LogoutButton />
             </form>
           </div>
+          {/* END OF REPLACEMENT */}
+
         </div>
       </div>
 

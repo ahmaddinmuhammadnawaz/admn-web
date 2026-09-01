@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect, useTransition } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { CalendarRange, X, Check } from 'lucide-react'
+import { CalendarRange, X, Check, Loader2 } from 'lucide-react'
 
 function formatShort(dateStr: string) {
   const d = new Date(dateStr + 'T00:00:00')
@@ -25,6 +25,9 @@ export default function DateRangeFilter({
   const wrapperRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({})
+  
+  // Added useTransition hook for smooth loading states
+  const [isPending, startTransition] = useTransition()
 
   const hasActiveFilter = Boolean(initialFrom || initialTo)
 
@@ -82,7 +85,6 @@ export default function DateRangeFilter({
   }, [open])
 
   const apply = () => {
-    // FIX: Clone existing params instead of starting blank
     const params = new URLSearchParams(searchParams.toString()) 
     
     if (from) params.set('from', from)
@@ -91,25 +93,29 @@ export default function DateRangeFilter({
     if (to) params.set('to', to)
     else params.delete('to')
 
-    // FIX: Always reset to Page 1 when changing the date filter!
     params.delete('page')
 
-    router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
-    setOpen(false)
+    // Wrap routing in startTransition
+    startTransition(() => {
+      router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
+      setOpen(false)
+    })
   }
 
   const clear = () => {
     setFrom('')
     setTo('')
     
-    // Clone existing params so we don't wipe out searches or type filters
     const params = new URLSearchParams(searchParams.toString()) 
     params.delete('from')
     params.delete('to')
-    params.delete('page') // Safely return to page 1
+    params.delete('page') 
 
-    router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
-    setOpen(false)
+    // Wrap routing in startTransition
+    startTransition(() => {
+      router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
+      setOpen(false)
+    })
   }
 
   const pillLabel = hasActiveFilter
@@ -172,14 +178,17 @@ export default function DateRangeFilter({
           <div className="flex items-center gap-2">
             <button
               onClick={apply}
-              className="flex-1 bg-[#131924] text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-[#232B38] transition-colors flex items-center justify-center gap-1.5"
+              disabled={isPending}
+              className="flex-1 bg-[#131924] text-white px-3 py-2 rounded-lg text-sm font-semibold hover:bg-[#232B38] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <Check size={14} strokeWidth={2.5} /> Apply
+              {isPending ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} strokeWidth={2.5} />} 
+              {isPending ? 'Applying...' : 'Apply'}
             </button>
             {hasActiveFilter && (
               <button
                 onClick={clear}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-[#131924] hover:bg-gray-100 transition-colors"
+                disabled={isPending}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-[#131924] hover:bg-gray-100 transition-colors disabled:opacity-50"
               >
                 Clear
               </button>
