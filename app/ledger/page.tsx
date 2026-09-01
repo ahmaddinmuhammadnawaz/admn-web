@@ -23,11 +23,14 @@ export default async function Home() {
     p_years = selectedYear.split(',').map(y => parseInt(y.trim(), 10))
   }
 
+  // FIX: Don't send explicit nulls to Supabase to prevent type-casting crashes
+  const rpcParams = p_years ? { p_years } : {}
+
   // Fetch accounts, folders, and our aggregated balances directly from the database
   const [ { data: accounts }, { data: folders }, { data: balances } ] = await Promise.all([
     supabase.from('accounts').select('*').order('name', { ascending: true }),
     supabase.from('folders').select('*').order('name', { ascending: true }),
-    supabase.rpc('get_account_balances', { p_years: p_years }) // Now uses the proper year array
+    supabase.rpc('get_account_balances', rpcParams) 
   ])
 
   // Map the pre-calculated balances for quick lookup

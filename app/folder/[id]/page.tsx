@@ -31,10 +31,13 @@ export default async function FolderPage({ params }: { params: Promise<{ id: str
 
   if (folderError || !folder) notFound()
 
+  // FIX: Omit null parameters to prevent PostgREST crashes
+  const rpcParams = p_years ? { p_years } : {}
+
   // Fetch ALL accounts and the aggregated balances simultaneously
   const [ { data: allAccounts }, { data: balances } ] = await Promise.all([
     supabase.from('accounts').select('id, name, folder_id, area, status').order('name'),
-    supabase.rpc('get_account_balances', { p_years: p_years }) // Now respects the year filter!
+    supabase.rpc('get_account_balances', rpcParams) 
   ])
   
   // Filter out only the accounts that currently belong to this folder for the main view

@@ -43,17 +43,20 @@ export default async function accountLedger({
   const currentPage = parseInt(page, 10) || 1;
   const pageOffset = (currentPage - 1) * PAGE_SIZE; 
   
+  // FIX: Build parameters object dynamically to strip out nulls
+  const rpcParams: any = {
+    p_account_id: id,
+    p_limit: PAGE_SIZE + 1,
+    p_offset: pageOffset,
+    p_type: type
+  }
+  if (from) rpcParams.p_from_date = from
+  if (to) rpcParams.p_to_date = to
+  if (q) rpcParams.p_search = q
+
   // Fetch one extra row (+1) to accurately check if a next page exists
   const { data: rawEntries, error: entriesError } = await supabase
-    .rpc('get_ledger_with_balances', { 
-      p_account_id: id, 
-      p_limit: PAGE_SIZE + 1, 
-      p_offset: pageOffset,
-      p_from_date: from || null,
-      p_to_date: to || null,
-      p_search: q || null,
-      p_type: type
-    })
+    .rpc('get_ledger_with_balances', rpcParams)
 
   if (entriesError || !rawEntries) {
     return <div className="p-8 text-red-600">Error loading ledger entries.</div>
