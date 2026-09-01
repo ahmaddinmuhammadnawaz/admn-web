@@ -39,28 +39,34 @@ export default function CreateActionFab() {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsOpen(false)} />
+        <div 
+          className="fixed inset-0 z-40 bg-transparent cursor-pointer" 
+          onClick={() => setIsOpen(false)} 
+        />
       )}
-      <div className="fixed fab-safe-bottom right-5 sm:right-8 z-50 flex flex-col items-end gap-3">
+      <div className="fixed fab-safe-bottom right-5 sm:right-8 z-50 flex flex-col items-end gap-3 pointer-events-none">
         {isOpen && (
-          <div className="flex flex-col gap-2 mb-2 animate-in slide-in-from-bottom-4">
+          <div className="flex flex-col gap-2 mb-2 animate-in slide-in-from-bottom-4 pointer-events-auto">
             <button 
+              type="button"
               onClick={() => setShowFolderForm(true)}
-              className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-lg border border-[#E5E7EB] hover:bg-gray-50 font-semibold text-sm text-gray-800"
+              className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-lg border border-[#E5E7EB] active:bg-gray-50 md:hover:bg-gray-50 font-semibold text-sm text-gray-800 transition-colors"
             >
               <FolderPlus size={18} /> Create Folder
             </button>
             <Link 
               href="/add-account"
-              className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-lg border border-[#E5E7EB] hover:bg-gray-50 font-semibold text-sm text-gray-800"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-lg border border-[#E5E7EB] active:bg-gray-50 md:hover:bg-gray-50 font-semibold text-sm text-gray-800 transition-colors"
             >
               <UserPlus size={18} /> Add Account
             </Link>
           </div>
         )}
         <button
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-14 h-14 sm:w-16 sm:h-16 bg-[#131924] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-gray-800 active:scale-95 transition-all"
+          className="cursor-pointer pointer-events-auto w-14 h-14 sm:w-16 sm:h-16 bg-[#131924] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] flex items-center justify-center text-white active:bg-gray-800 md:hover:bg-gray-800 active:scale-95 transition-all"
         >
           <Plus size={26} strokeWidth={2.5} className={`transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />
         </button>

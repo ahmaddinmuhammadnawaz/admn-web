@@ -39,15 +39,13 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
     return nameMatch || areaMatch || phoneMatch || refMatch || fatherMatch
   })
 
-  // NEW: If we are in folder view, show all filtered accounts.
-  // On the home screen: Active tab only shows "loose" accounts (folder accounts appear inside their folder card).
-  // Closed tab surfaces ALL closed accounts directly, including ones that belong to a folder,
-  // so a closed account is never hidden away inside a folder the user isn't looking at.
   const displayAccounts = isFolderView
     ? filteredaccounts
     : statusFilter === 'Closed'
       ? filteredaccounts
-      : filteredaccounts.filter(a => !a.folder_id)
+      : searchQuery !== ''
+        ? filteredaccounts // Bypasses folder restriction when searching
+        : filteredaccounts.filter(a => !a.folder_id)
 
   const filteredFolders = folders.filter(folder => 
     searchQuery === '' || folder.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -62,8 +60,9 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
       {!isFolderView && stats && (
         <div className="flex gap-3 mb-6">
           <button 
+            type="button"
             onClick={() => setStatusFilter('Active')}
-            className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
+            className={`cursor-pointer rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
               statusFilter === 'Active' ? 'bg-white border-[#16A34A] ring-1 ring-[#16A34A]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
             }`}
           >
@@ -72,8 +71,9 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
           </button>
           
           <button 
+            type="button"
             onClick={() => setStatusFilter('Closed')}
-            className={`rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
+            className={`cursor-pointer rounded-2xl p-4 sm:p-5 border shadow-sm shrink-0 min-w-[72px] text-center transition-all ${
               statusFilter === 'Closed' ? 'bg-white border-[#6B7280] ring-1 ring-[#6B7280]' : 'bg-white border-[#E5E7EB] hover:border-[#131924]'
             }`}
           >
@@ -82,7 +82,7 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
           </button>
           
           <Link 
-            href="/history"
+            href="/history?source=ledger"
             className="bg-white rounded-2xl p-4 sm:p-5 border border-[#E5E7EB] hover:border-[#131924] shadow-sm flex-1 min-w-0 text-center transition-all cursor-pointer block"
           >
             <p className={`text-base sm:text-lg font-bold truncate tnum ${
@@ -210,7 +210,7 @@ export default function DashboardClient({ initialaccounts, folders = [], stats, 
                               ? 'bg-green-50 text-[#16A34A]' 
                               : 'bg-gray-100 text-gray-700'
                           }`}>
-                            {bal === 0 ? '0' : bal > 0 ? `Debit ${formattedBal}` : `Credit ${formattedBal}`}
+                            {bal === 0 ? 'Settled' : bal > 0 ? `Debit ${formattedBal}` : `Credit ${formattedBal}`}
                           </span>
                         </div>
                       </div>

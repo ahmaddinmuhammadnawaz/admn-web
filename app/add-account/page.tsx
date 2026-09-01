@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import BackButton from '@/components/BackButton'
 import AddAccountForm from './AddAccountForm'
 
 export default async function AddaccountPage() {
@@ -14,13 +15,12 @@ export default async function AddaccountPage() {
       <div className="w-full max-w-2xl bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-[#E5E7EB] p-5 sm:p-8 mt-2 sm:mt-10">
 
         <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <Link
-            href="/"
+          <BackButton
             className="text-[#6B7280] hover:text-[#131924] transition-colors p-1 -ml-1 shrink-0"
             title="Cancel"
           >
             <ArrowLeft size={22} strokeWidth={2.25} />
-          </Link>
+          </BackButton>
           <h1 className="text-xl sm:text-2xl font-bold text-[#131924]">Add New Account</h1>
         </div>
 

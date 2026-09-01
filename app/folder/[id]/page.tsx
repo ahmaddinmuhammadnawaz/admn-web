@@ -2,23 +2,39 @@ import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Folder } from 'lucide-react'
+import BackButton from '@/components/BackButton'
+import { cookies } from 'next/headers'
 import DashboardClient from '@/app/DashboardClient'
 import ManageFolderAccounts from '@/components/ManageFolderAccounts'
 import DeleteFolderButton from '@/components/DeleteFolderButton'
 import EditFolderButton from '@/components/EditFolderButton'
 
+// Change this line to accept the Promise:
 export default async function FolderPage({ params }: { params: Promise<{ id: string }> }) {
+  
+  // Add this await:
   const { id } = await params
+  
   const supabase = await createClient()
+  
+  // Read the year filter cookie just like the home page does
+  const cookieStore = await cookies()
+  const rawYear = cookieStore.get('selected_year')?.value
+  const selectedYear = rawYear ? decodeURIComponent(rawYear) : new Date().getFullYear().toString()
+  let p_years = null
+  if (selectedYear !== 'All') {
+    p_years = selectedYear.split(',').map(y => parseInt(y.trim(), 10))
+  }
 
-  // Fetch the specific folder
-  const { data: folder } = await supabase.from('folders').select('*').eq('id', id).single()
-  if (!folder) notFound()
+  // The rest of your code stays exactly the same!
+  const { data: folder, error: folderError } = await supabase.from('folders').select('*').eq('id', id).single()
+
+  if (folderError || !folder) notFound()
 
   // Fetch ALL accounts and the aggregated balances simultaneously
   const [ { data: allAccounts }, { data: balances } ] = await Promise.all([
     supabase.from('accounts').select('id, name, folder_id, area, status').order('name'),
-    supabase.rpc('get_account_balances') // Fetches grouped balances instead of raw entries
+    supabase.rpc('get_account_balances', { p_years: p_years }) // Now respects the year filter!
   ])
   
   // Filter out only the accounts that currently belong to this folder for the main view
@@ -39,9 +55,9 @@ export default async function FolderPage({ params }: { params: Promise<{ id: str
       <div className="bg-[#131924] w-full safe-top">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex items-start justify-between gap-3">
           <div className="flex items-start gap-4 text-white min-w-0 pr-4">
-            <Link href="/" className="hover:text-gray-300 shrink-0 mt-0.5">
+            <BackButton className="hover:text-gray-300 shrink-0 mt-0.5">
               <ArrowLeft size={24} />
-            </Link>
+            </BackButton>
             <div className="flex items-start gap-2 sm:gap-3 min-w-0">
               <Folder size={24} className="text-white/80 shrink-0 mt-0.5" />
               <h1 className="text-lg sm:text-xl font-bold break-words">{folder.name}</h1>

@@ -40,7 +40,6 @@ export default function accountLedgerLoading() {
                 <div className="h-3 w-24 bg-white/10 rounded animate-pulse mb-1.5"></div>
                 <div className="h-8 w-32 bg-white/10 rounded-lg animate-pulse"></div>
               </div>
-              <div className="h-11 w-11 sm:w-28 sm:h-10 bg-white rounded-full sm:rounded-xl animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -57,6 +56,16 @@ export default function accountLedgerLoading() {
       {/* Ledger Table area */}
       <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
         
+        {/* Inline Form Skeleton */}
+        <div className="bg-white p-5 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm flex flex-col lg:flex-row gap-4 items-start animate-pulse">
+          <div className="w-full lg:w-[14%] h-[66px] bg-gray-100 rounded-xl"></div>
+          <div className="w-full lg:w-[10%] h-[66px] bg-gray-100 rounded-xl"></div>
+          <div className="w-full lg:flex-1 h-[66px] bg-gray-100 rounded-xl"></div>
+          <div className="w-full lg:w-[10%] h-[66px] bg-gray-100 rounded-xl"></div>
+          <div className="w-full lg:w-[22%] h-[66px] bg-gray-100 rounded-xl"></div>
+          <div className="w-full lg:w-[140px] h-[42px] mt-[24px] bg-gray-200 rounded-xl hidden lg:block"></div>
+        </div>
+
         {/* Search/Filter Skeleton */}
         <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
           <div className="h-12 w-full bg-[#F7F8FA] rounded-xl border border-[#E5E7EB] mb-4 animate-pulse"></div>

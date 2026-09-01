@@ -6,20 +6,20 @@ import LedgerClient from './LedgerClient'
 import { toggleAccountStatus, deleteAccount } from '@/app/actions'
 import DeleteAccountButton from './DeleteAccountButton'
 import { ArrowLeft, Plus, User, Phone, MapPin, Handshake, Pencil, IdCard, Wheat, StickyNote } from 'lucide-react'
+import BackButton from '@/components/BackButton'
 import ToggleStatusButton from './ToggleStatusButton'
 import DateRangeFilter from '@/components/DateRangeFilter'
 import PrintButton from '@/components/PrintButton'
-
 
 export default async function accountLedger({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ from?: string; to?: string }>
+  searchParams: Promise<{ from?: string; to?: string; page?: string; q?: string; type?: string }>
 }) {
   const { id } = await params
-  const { from, to } = await searchParams
+  const { from, to, page = '1', q = '', type = 'All' } = await searchParams
   const supabase = await createClient()
 
   // 1. Safely decode the cookie to handle commas correctly
@@ -38,75 +38,39 @@ export default async function accountLedger({
 
   const hasDateRange = Boolean(from || to)
 
-  let entriesQuery = supabase
-    .from('ledger_entries')
-    .select('*')
-    .eq('account_id', id)
-    .limit(500000)
+  // 2. Pagination & Search calculations
+  const PAGE_SIZE = 100;
+  const currentPage = parseInt(page, 10) || 1;
+  const pageOffset = (currentPage - 1) * PAGE_SIZE; 
+  
+  // Fetch one extra row (+1) to accurately check if a next page exists
+  const { data: rawEntries, error: entriesError } = await supabase
+    .rpc('get_ledger_with_balances', { 
+      p_account_id: id, 
+      p_limit: PAGE_SIZE + 1, 
+      p_offset: pageOffset,
+      p_from_date: from || null,
+      p_to_date: to || null,
+      p_search: q || null,
+      p_type: type
+    })
 
-  // 1. Initialize past balance
-  let pastBalance = 0
-
-  // 2. Date range logic with historical balance calculations
-  if (hasDateRange) {
-    if (from) {
-      // Fetch historical balance before the 'from' date
-      const { data: pastEntries } = await supabase
-        .from('ledger_entries')
-        .select('debit, credit')
-        .eq('account_id', id)
-        .lt('entry_date', from)
-
-      pastEntries?.forEach(e => {
-        const d = Number(e.debit) || 0
-        const c = Number(e.credit) || 0
-        // FIX: Round at each step to prevent floating-point drift accumulation
-        pastBalance = Math.round((pastBalance + d - c) * 100) / 100
-      })
-
-      entriesQuery = entriesQuery.gte('entry_date', from)
-    }
-    if (to) entriesQuery = entriesQuery.lte('entry_date', to)
-
-  } else if (selectedYear !== 'All') {
-    const yearsArray = selectedYear.split(',')
-    const maxYear = Math.max(...yearsArray.map(y => parseInt(y.trim(), 10)))
-    
-    // Fetch all historical data up to the maximum selected year to ensure perfect math
-    entriesQuery = entriesQuery.lte('entry_date', `${maxYear}-12-31`)
-  }
-
-  // 3. Execute the main query for the visible rows
-  const { data: entries, error: entriesError } = await entriesQuery
-    .order('entry_date', { ascending: true })
-    .order('created_at', { ascending: true })
-
-  if (entriesError || !entries) {
+  if (entriesError || !rawEntries) {
     return <div className="p-8 text-red-600">Error loading ledger entries.</div>
   }
 
-  let currentBalance = pastBalance
+  const hasNextPage = rawEntries.length > PAGE_SIZE;
+  
+  // Convert running_balance to camelCase and cast to Number
+  const processedEntries = rawEntries.slice(0, PAGE_SIZE).map((entry: any) => ({
+    ...entry,
+    runningBalance: Number(entry.running_balance) || 0
+  }));
 
-  // 4. Calculate perfect running balances chronologically for all fetched entries
-  const allProcessed = entries.map((entry) => {
-    const debit = Number(entry.debit) || 0
-    const credit = Number(entry.credit) || 0
-
-    currentBalance = Math.round((currentBalance + debit - credit) * 100) / 100
-
-    return {
-      ...entry,
-      runningBalance: currentBalance,
-    }
-  })
-
-  // 5. After the math is done, filter out the years only if a custom date range isn't active
-  const processedEntries = (selectedYear === 'All' || hasDateRange) 
-    ? allProcessed 
-    : allProcessed.filter((entry) => {
-        const entryYear = entry.entry_date.split('-')[0]
-        return selectedYear.split(',').includes(entryYear)
-      })
+  // Extract the most recent balance to show in the header
+  const currentBalance = processedEntries.length > 0 
+    ? processedEntries[0].runningBalance 
+    : 0;
 
   const toggleStatus = toggleAccountStatus.bind(null, account.id, account.status)
   const deleteAction = deleteAccount.bind(null, account.id) 
@@ -119,13 +83,12 @@ export default async function accountLedger({
 
           {/* Row 1: Back + Actions */}
           <div className="flex items-center justify-between mb-6">
-            <Link
-              href="/"
+            <BackButton
               className="text-white/80 hover:text-white transition-opacity p-1 -ml-1"
-              title="Back to Dashboard"
+              title="Back"
             >
               <ArrowLeft size={22} strokeWidth={2.25} />
-            </Link>
+            </BackButton>
 
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
@@ -209,17 +172,6 @@ export default async function accountLedger({
                       : `Credit ${new Intl.NumberFormat('en-PK').format(Math.abs(currentBalance))}`}
                 </p>
               </div>
-
-              {account.status === 'Active' && (
-                <Link
-                  href={`/account/${id}/add-entry`}
-                  className="bg-white text-[#131924] w-11 h-11 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 rounded-full sm:rounded-xl font-bold text-sm hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-sm"
-                >
-                  <Plus size={20} strokeWidth={2.5} className="sm:hidden" />
-                  <Plus size={16} strokeWidth={2.5} className="hidden sm:block" />
-                  <span className="hidden sm:inline">Add Entry</span>
-                </Link>
-              )}
             </div>
           </div>
 
@@ -252,7 +204,13 @@ export default async function accountLedger({
         <p className="text-xs text-gray-400 mb-4">Generated {new Date().toLocaleDateString('en-GB')}</p>
       </div>
 
-      <LedgerClient initialEntries={processedEntries} />
+      <LedgerClient 
+        initialEntries={processedEntries} 
+        currentPage={currentPage} 
+        hasNextPage={hasNextPage}
+        accountId={account.id}
+        accountStatus={account.status}
+      />
     </main>
   )
 }

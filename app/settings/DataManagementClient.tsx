@@ -3,6 +3,7 @@
 import { useState, useRef, useTransition } from 'react'
 import { Download, Upload, Trash2, Database, AlertOctagon, Loader2 } from 'lucide-react'
 import { ConfirmModal } from '@/components/ConfirmModal'
+import { AlertModal } from '@/components/AlertModal'
 import { exportData } from '@/app/actions'
 
 export default function DataManagementClient({ 
@@ -17,6 +18,10 @@ export default function DataManagementClient({
   const [isImporting, startImport] = useTransition()
   const [isDeleting, startDelete] = useTransition()
   
+  // Alert Modal State
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertInfo, setAlertInfo] = useState({ title: '', message: '' })
+
   // Import State
   const [showImportModal, setShowImportModal] = useState(false)
   const importFormRef = useRef<HTMLFormElement>(null)
@@ -29,20 +34,46 @@ export default function DataManagementClient({
     startExport(async () => {
       try {
         const jsonString = await exportData()
-        
-        const blob = new Blob([jsonString], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        
-        a.href = url
-        a.download = `admn_backup_${new Date().toISOString().split('T')[0]}.json`
-        
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-      } catch (e) {
-        alert("Failed to export data")
+        const fileName = `ADMN_Backup_${new Date().toISOString().split('T')[0]}.json`
+        const file = new File([jsonString], fileName, { type: 'application/json' })
+
+        // Helper function for the standard download fallback
+        const triggerDownload = () => {
+          const url = URL.createObjectURL(file)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = fileName
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+        }
+
+        // Try Native Share first
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'ADMN Backup',
+              files: [file]
+            })
+          } catch (shareError) {
+            // If the user manually closed the share sheet, just do nothing
+            if ((shareError as Error).name === 'AbortError') return
+            
+            // If the browser blocked the share (due to timeout/security), fallback to download
+            triggerDownload()
+          }
+        } else {
+          // Fallback if the device/browser doesn't support file sharing at all
+          triggerDownload()
+        }
+      } catch (serverError) {
+        // This only fires if the actual database export fails
+        setAlertInfo({ 
+          title: "Export Failed", 
+          message: "An error occurred while gathering your data from the server. Please try again." 
+        })
+        setShowAlert(true)
       }
     })
   }
@@ -86,10 +117,10 @@ export default function DataManagementClient({
             <button
               onClick={handleExport}
               disabled={isExporting || isImporting || isDeleting}
-              className="bg-white border border-[#E5E7EB] text-[#131924] font-bold py-3 px-4 rounded-xl hover:bg-gray-50 hover:border-[#131924] active:scale-[0.98] transition-all flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
+              className="bg-[#131924] text-white font-bold py-3.5 px-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.15)] hover:bg-[#232B38] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 transition-all flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isExporting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
-              {isExporting ? 'Packaging File...' : 'Download Backup File'}
+              {isExporting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} strokeWidth={2.5} />}
+              {isExporting ? 'Packaging Backup...' : 'Create Backup'}
             </button>
           </div>
 
@@ -121,7 +152,15 @@ export default function DataManagementClient({
                 type="button"
                 disabled={isImporting || isExporting || isDeleting}
                 onClick={() => {
-                  if (!fileName) return alert('Please tap to select a backup file first.')
+                  if (!fileName) {
+                    // Replaced native alert with custom modal
+                    setAlertInfo({ 
+                      title: "Action Required", 
+                      message: "Please tap to select a backup file first." 
+                    })
+                    setShowAlert(true)
+                    return
+                  }
                   setShowImportModal(true)
                 }}
                 className="bg-[#131924] text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-800 active:scale-[0.98] transition-all shrink-0 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -146,7 +185,7 @@ export default function DataManagementClient({
         </div>
         
         <p className="text-sm text-gray-600 mb-5 relative z-10">
-          This action will permanently delete <strong className="text-gray-900 font-bold">EVERYTHING</strong> in your database. All accounts, accounts, and ledger entries will be completely erased. This cannot be undone. Please ensure you have downloaded a backup first.
+          This action will permanently delete <strong className="text-gray-900 font-bold">EVERYTHING</strong> in your database. All accounts and ledger entries will be completely erased. This cannot be undone. Please ensure you have downloaded a backup first.
         </p>
         
         <button 
@@ -159,6 +198,14 @@ export default function DataManagementClient({
           {isDeleting ? 'Deleting Everything...' : 'Delete All Data Forever'}
         </button>
       </div>
+
+      {/* Reusable Alert Modal */}
+      <AlertModal 
+        isOpen={showAlert} 
+        onClose={() => setShowAlert(false)} 
+        title={alertInfo.title} 
+        message={alertInfo.message} 
+      />
 
       {/* Reusable Confirm Modals tracking the transition states */}
       <ConfirmModal

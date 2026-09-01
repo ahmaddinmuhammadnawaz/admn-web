@@ -4,9 +4,11 @@ import Link from 'next/link'
 import DashboardClient from '@/app/DashboardClient'
 import { signOut } from '@/app/actions'
 import Image from 'next/image'
-import { Settings } from 'lucide-react'
+import { Settings, ArrowLeft } from 'lucide-react'
+import BackButton from '@/components/BackButton'
 import { LogoutButton } from '@/components/LogoutButton'
 import CreateActionFab from '@/components/CreateActionFab'
+
 
 export default async function Home() {
   const supabase = await createClient()
@@ -15,19 +17,17 @@ export default async function Home() {
   const rawYear = cookieStore.get('selected_year')?.value
   const selectedYear = rawYear ? decodeURIComponent(rawYear) : new Date().getFullYear().toString()
   
-  // Format the date for our new database function
-  let cutoffDate = null
+  // Format the years array for the updated database function
+  let p_years = null
   if (selectedYear !== 'All') {
-    const yearsArray = selectedYear.split(',')
-    const maxYear = Math.max(...yearsArray.map(y => parseInt(y.trim(), 10)))
-    cutoffDate = `${maxYear}-12-31`
+    p_years = selectedYear.split(',').map(y => parseInt(y.trim(), 10))
   }
 
   // Fetch accounts, folders, and our aggregated balances directly from the database
   const [ { data: accounts }, { data: folders }, { data: balances } ] = await Promise.all([
     supabase.from('accounts').select('*').order('name', { ascending: true }),
     supabase.from('folders').select('*').order('name', { ascending: true }),
-    supabase.rpc('get_account_balances', { cutoff_date: cutoffDate }) // Extremely fast RPC call
+    supabase.rpc('get_account_balances', { p_years: p_years }) // Now uses the proper year array
   ])
 
   // Map the pre-calculated balances for quick lookup
@@ -83,15 +83,18 @@ export default async function Home() {
   netBalance = Math.round(netBalance * 100) / 100
 
   const balanceLabel = netBalance === 0
-    ? '0'
+    ? 'Settled'
     : new Intl.NumberFormat('en-PK').format(Math.abs(netBalance))
 
   return (
     <main className="bg-[#F7F8FA] min-h-screen relative pb-28">
       {/* Top Bar */}
-      <div className="bg-[#131924] w-full safe-top">
+      <div className="bg-[#131924] w-full safe-top shadow-md relative z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex justify-between items-center text-white">
           <div className="flex items-center gap-3 min-w-0">
+            <Link href="/" className="text-white/80 hover:text-white transition-colors shrink-0 p-1 -ml-1">
+              <ArrowLeft size={22} strokeWidth={2.25} />
+            </Link>
             <div className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center shadow-inner overflow-hidden bg-[#2A313C]">
               <Image
                 src="/icon.png"
@@ -101,13 +104,15 @@ export default async function Home() {
                 className="object-contain w-full h-full"
               />
             </div>
-            <span className="font-semibold text-[13px] sm:text-sm truncate">Commission Shop Ledger</span>
+            <span className="font-bold text-lg tracking-wide truncate">Ledger Book</span>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-5 shrink-0">
-            <Link href="/settings" className="text-white/90 hover:text-white transition-colors" title="Settings">
-              <Settings size={21} strokeWidth={2} />
+          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+            <Link href="/settings" className="text-white/70 hover:text-white transition-colors" title="Settings">
+              <span className="hidden md:inline text-sm font-medium">Settings</span>
             </Link>
+
+            <div className="w-px h-5 bg-white/20 hidden sm:block"></div>
 
             <form action={signOut}>
               <LogoutButton />

@@ -1,9 +1,16 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft, Receipt } from 'lucide-react'
+import BackButton from '@/components/BackButton'
 import PrintButton from '@/components/PrintButton'
 
-export default async function HistoryPage() {
+export default async function HistoryPage({ searchParams }: { searchParams: Promise<{ source?: string }> }) {
+  const { source } = await searchParams
+  
+  let backLink = '/'
+  if (source === 'daily') backLink = '/daily'
+  if (source === 'ledger') backLink = '/ledger'
+
   const supabase = await createClient()
 
   // Query the new SQL View directly. This is extremely fast because 
@@ -47,9 +54,9 @@ export default async function HistoryPage() {
 
           <div className="flex items-center gap-3 mb-8 mt-6">
             <Link
-              href="/"
+              href={backLink}
               className="text-white/80 hover:text-white transition-all p-2 -ml-2 rounded-lg hover:bg-white/10"
-              title="Back to Dashboard"
+              title="Back"
             >
               <ArrowLeft size={22} strokeWidth={2.25} />
             </Link>

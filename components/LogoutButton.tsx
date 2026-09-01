@@ -20,7 +20,7 @@ export function LogoutButton() {
         // If it's pending, clicking does nothing
         onClick={() => !pending && setShowModal(true)}
         disabled={pending}
-        className="text-white/90 hover:text-white transition-colors p-1 disabled:opacity-50" 
+        className="cursor-pointer text-white/90 active:text-white md:hover:text-white transition-colors p-1 disabled:opacity-50" 
         title={pending ? "Signing out..." : "Sign out"}
       >
         {/* Swap the icon for a spinner when pending */}

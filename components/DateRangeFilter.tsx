@@ -91,6 +91,9 @@ export default function DateRangeFilter({
     if (to) params.set('to', to)
     else params.delete('to')
 
+    // FIX: Always reset to Page 1 when changing the date filter!
+    params.delete('page')
+
     router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
     setOpen(false)
   }
@@ -98,7 +101,14 @@ export default function DateRangeFilter({
   const clear = () => {
     setFrom('')
     setTo('')
-    router.push(pathname)
+    
+    // Clone existing params so we don't wipe out searches or type filters
+    const params = new URLSearchParams(searchParams.toString()) 
+    params.delete('from')
+    params.delete('to')
+    params.delete('page') // Safely return to page 1
+
+    router.push(params.toString() ? `${pathname}?${params.toString()}` : pathname)
     setOpen(false)
   }
 

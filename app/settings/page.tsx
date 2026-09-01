@@ -2,11 +2,12 @@ import { changePassword, importData, deleteAllData, setYearFilter } from '@/app/
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { ArrowLeft, KeyRound, CalendarDays } from 'lucide-react'
+import BackButton from '@/components/BackButton'
 import PasswordInput from '@/app/login/PasswordInput'
 import SettingsForm from './SettingsForm' 
 import { SubmitButton } from '@/components/SubmitButton'
 import DataManagementClient from './DataManagementClient'
-import YearFilterForm from './YearFilterForm' // <-- IMPORT THE NEW COMPONENT
+import YearFilterForm from './YearFilterForm' 
 
 export default async function SettingsPage({
   searchParams,
@@ -31,7 +32,7 @@ export default async function SettingsPage({
           <Link
             href="/"
             className="text-white opacity-80 hover:opacity-100 transition-opacity px-1 py-5 -ml-1 inline-block"
-            title="Back to Dashboard"
+            title="Back to Home"
           >
             <ArrowLeft size={24} strokeWidth={2.25} />
           </Link>

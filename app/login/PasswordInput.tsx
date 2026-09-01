@@ -22,6 +22,7 @@ export default function PasswordInput({
         className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#E5E7EB] focus:outline-none focus:border-[#131924] focus:ring-1 focus:ring-[#131924] bg-white text-black"
         type={showPassword ? "text" : "password"}
         name={name}
+        id={name}
         placeholder={placeholder}
         minLength={minLength}
         required

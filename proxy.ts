@@ -30,8 +30,8 @@ export async function proxy(request: NextRequest) {
   // Refresh the session
   const { data: { user } } = await supabase.auth.getUser()
 
-  // If there is no user and the route is NOT the login page, redirect to login
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+  // If there is no user and the route is NOT the login page AND NOT an API route, redirect to login
+  if (!user && !request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/api')) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
