@@ -10,6 +10,7 @@ export default async function HistoryPage({ searchParams }: { searchParams: Prom
   let backLink = '/'
   if (source === 'daily') backLink = '/daily'
   if (source === 'ledger') backLink = '/ledger'
+  if (source === 'daybook') backLink = '/daybook'
 
   const supabase = await createClient()
 

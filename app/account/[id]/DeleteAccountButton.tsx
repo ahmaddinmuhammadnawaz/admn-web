@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { ConfirmModal } from '@/components/ConfirmModal'
 
-export default function DeleteaccountButton() {
+export default function DeleteAccountButton() {
   const [showModal, setShowModal] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 

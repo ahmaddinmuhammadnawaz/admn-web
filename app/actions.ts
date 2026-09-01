@@ -172,7 +172,7 @@ export async function deleteAccount(accountId: string) {
   }
   // Refresh the main dashboard and redirect to it
   revalidatePath('/ledger')
-  redirect('/ledger')
+  redirect('/ledger', 'replace')
 }
 export async function editaccount(accountId: string, formData: FormData) {
   const supabase = await createClient()
@@ -209,11 +209,15 @@ export async function exportData() {
     { data: accounts },
     { data: dailyPages },
     { data: dailyEntries },
+    { data: daybookPages },
+    { data: daybookEntries },
   ] = await Promise.all([
     supabase.from('folders').select('*'),
     supabase.from('accounts').select('*'),
     supabase.from('daily_pages').select('*'),
     supabase.from('daily_entries').select('*'),
+    supabase.from('daybook_pages').select('*'),
+    supabase.from('daybook_entries').select('*'),
   ])
 
   // Batch fetch massive tables to prevent Vercel out-of-memory (OOM) crashes
@@ -236,15 +240,17 @@ export async function exportData() {
     }
   }
 
-  // Return a tightly packed JSON string including the new tables (Bumped version to 3)
+  // Return a tightly packed JSON string including the new tables (Bumped version to 4)
   return JSON.stringify({
-    version: 3,
+    version: 4,
     timestamp: new Date().toISOString(),
     folders,
     accounts,
     entries,
     dailyPages,
-    dailyEntries
+    dailyEntries,
+    daybookPages,
+    daybookEntries
   })
 }
 export async function importData(formData: FormData) {
@@ -282,15 +288,27 @@ export async function importData(formData: FormData) {
     }
 
     // 4. Restore Entry Book Pages (New feature support)
-    if (parsedData.daily_pages && parsedData.daily_pages.length > 0) {
-      const { error: pageError } = await supabase.from('daily_pages').upsert(parsedData.daily_pages)
+    if (parsedData.dailyPages && parsedData.dailyPages.length > 0) {
+      const { error: pageError } = await supabase.from('daily_pages').upsert(parsedData.dailyPages)
       if (pageError) throw pageError
     }
 
     // 5. Restore Entry Book Entries (New feature support)
-    if (parsedData.daily_entries && parsedData.daily_entries.length > 0) {
-      const { error: dailyEntryError } = await supabase.from('daily_entries').upsert(parsedData.daily_entries)
+    if (parsedData.dailyEntries && parsedData.dailyEntries.length > 0) {
+      const { error: dailyEntryError } = await supabase.from('daily_entries').upsert(parsedData.dailyEntries)
       if (dailyEntryError) throw dailyEntryError
+    }
+
+    // 6. Restore Day Book Pages
+    if (parsedData.daybookPages && parsedData.daybookPages.length > 0) {
+      const { error: daybookPageError } = await supabase.from('daybook_pages').upsert(parsedData.daybookPages)
+      if (daybookPageError) throw daybookPageError
+    }
+
+    // 7. Restore Day Book Entries
+    if (parsedData.daybookEntries && parsedData.daybookEntries.length > 0) {
+      const { error: daybookEntryError } = await supabase.from('daybook_entries').upsert(parsedData.daybookEntries)
+      if (daybookEntryError) throw daybookEntryError
     }
 
   } catch (error) {
@@ -309,10 +327,12 @@ export async function deleteAllData() {
     // Delete in reverse order of dependency
 
     // 1. Delete Entries (they depend on accounts and pages)
+    await supabase.from('daybook_entries').delete().not('id', 'is', null)
     await supabase.from('daily_entries').delete().not('id', 'is', null)
     await supabase.from('ledger_entries').delete().not('id', 'is', null)
 
-    // 2. Delete Daily Pages
+    // 2. Delete Pages
+    await supabase.from('daybook_pages').delete().not('id', 'is', null)
     await supabase.from('daily_pages').delete().not('id', 'is', null)
 
     // 3. Delete accounts (they depend on folders)
@@ -324,6 +344,7 @@ export async function deleteAllData() {
     revalidatePath('/')
     revalidatePath('/ledger')
     revalidatePath('/daily')
+    revalidatePath('/daybook') // <-- Add this line
     return { success: true }
   } catch (error) {
     console.error('Error resetting database:', error)
@@ -583,4 +604,120 @@ export async function deleteDailyPage(pageId: string) {
     console.error('Unexpected Error:', err)
     return { error: 'An unexpected error occurred.' }
   }
+}
+
+// --- DAY BOOK ACTIONS ---
+export async function createDaybookPage(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+  const date = formData.get('date') as string
+
+  const { data, error } = await supabase.from('daybook_pages').insert({ work_date: date }).select().single()
+
+  if (error) {
+    if (error.code === '23505') return { error: 'A page for this exact date already exists.' }
+    return { error: 'Failed to create page.' }
+  }
+  redirect(`/daybook/${data.id}`)
+}
+
+export async function addDaybookEntry(pageId: string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  const type = formData.get('type') as string
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const isDebit = type === 'Debit'
+
+  const { error } = await supabase.from('daybook_entries').insert({
+    page_id: pageId,
+    account_id: formData.get('account_id') as string,
+    detail: formData.get('detail') as string || null,
+    reference: formData.get('reference') as string || null,
+    debit: isDebit ? amount : 0,
+    credit: isDebit ? 0 : amount
+  })
+  if (error) throw new Error('Failed to add entry')
+  revalidatePath(`/daybook/${pageId}`)
+}
+
+export async function updateDaybookEntry(entryId: string, pageId: string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  const type = formData.get('type') as string
+  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const isDebit = type === 'Debit'
+
+  const { error } = await supabase.from('daybook_entries').update({
+    account_id: formData.get('account_id') as string,
+    detail: (formData.get('detail') as string) || null,
+    reference: (formData.get('reference') as string) || null,
+    debit: isDebit ? amount : 0,
+    credit: isDebit ? 0 : amount
+  }).eq('id', entryId)
+
+  if (error) throw new Error('Failed to update entry')
+  revalidatePath(`/daybook/${pageId}`)
+}
+
+export async function deleteDaybookEntry(entryId: string, pageId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  const { error } = await supabase.from('daybook_entries').delete().eq('id', entryId)
+  if (error) throw new Error('Failed to delete entry')
+  revalidatePath(`/daybook/${pageId}`)
+}
+
+export async function deleteDaybookPage(pageId: string) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
+
+    const { data: page } = await supabase.from('daybook_pages').select('is_transferred').eq('id', pageId).single()
+    if (page?.is_transferred) return { error: 'Cannot delete a transferred page.' }
+
+    await supabase.from('daybook_entries').delete().eq('page_id', pageId)
+    const { error } = await supabase.from('daybook_pages').delete().eq('id', pageId)
+    if (error) return { error: 'Failed to delete the page.' }
+
+    revalidatePath('/daybook')
+    return { success: true }
+  } catch (err) {
+    return { error: 'An unexpected error occurred.' }
+  }
+}
+
+export async function transferDaybookToLedger(pageId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data: page } = await supabase.from('daybook_pages').select('*').eq('id', pageId).single()
+  if (!page || page.is_transferred) throw new Error('Invalid or already transferred page')
+
+  const { data: entries } = await supabase.from('daybook_entries').select('*').eq('page_id', pageId)
+  if (!entries || entries.length === 0) throw new Error('No entries to transfer')
+
+  const ledgerPayload = entries.map(e => ({
+    account_id: e.account_id,
+    debit: e.debit,
+    credit: e.credit,
+    page_no: `DB-${page.page_no}`, // Added DB- prefix to distinguish from Entry Book pages in the ledger
+    detail: e.detail,
+    reference: e.reference,
+    entry_date: page.work_date
+  }))
+
+  const { error: insertError } = await supabase.from('ledger_entries').insert(ledgerPayload)
+  if (insertError) throw new Error('Failed to transfer to ledger')
+
+  await supabase.from('daybook_pages').update({ is_transferred: true }).eq('id', pageId)
+
+  revalidatePath(`/daybook/${pageId}`)
+  revalidatePath('/daybook')
+  revalidatePath('/ledger')
 }

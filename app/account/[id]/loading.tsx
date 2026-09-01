@@ -1,4 +1,4 @@
-export default function accountLedgerLoading() {
+export default function AccountLedgerLoading() {
   return (
     <main className="bg-[#F7F8FA] min-h-screen flex flex-col">
       {/* Top Header Skeleton */}

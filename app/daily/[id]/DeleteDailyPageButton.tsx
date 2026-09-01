@@ -19,7 +19,7 @@ export default function DeleteDailyPageButton({ pageId }: { pageId: string }) {
         alert(result.error)
         setIsOpen(false)
       } else {
-        router.push('/daily')
+        router.replace('/daily')
       }
     })
   }

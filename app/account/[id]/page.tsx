@@ -11,7 +11,7 @@ import ToggleStatusButton from './ToggleStatusButton'
 import DateRangeFilter from '@/components/DateRangeFilter'
 import PrintButton from '@/components/PrintButton'
 
-export default async function accountLedger({
+export default async function AccountLedger({
   params,
   searchParams,
 }: {
@@ -59,7 +59,8 @@ export default async function accountLedger({
     .rpc('get_ledger_with_balances', rpcParams)
 
   if (entriesError || !rawEntries) {
-    return <div className="p-8 text-red-600">Error loading ledger entries.</div>
+    console.error(entriesError); // Prints to VS Code terminal
+    return <div className="p-8 text-red-600">Error loading ledger entries: {entriesError?.message}</div>
   }
 
   const hasNextPage = rawEntries.length > PAGE_SIZE;

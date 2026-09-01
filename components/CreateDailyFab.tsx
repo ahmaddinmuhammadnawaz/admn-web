@@ -33,7 +33,7 @@ export default function CreateDailyFab() {
       <div className="fixed inset-0 z-50 bg-[#131924]/40 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl w-full max-w-sm shadow-lg p-5 animate-in zoom-in-95 duration-200">
           <div className="flex justify-between items-center mb-5">
-            <h2 className="text-lg font-bold text-[#131924]">New Daily Page</h2>
+            <h2 className="text-lg font-bold text-[#131924]">New Entry Page</h2>
             <button onClick={handleClose} className="text-gray-400 hover:text-black transition-colors p-1 bg-gray-100 hover:bg-gray-200 rounded-lg">
               <X size={18} strokeWidth={2.5} />
             </button>

@@ -26,7 +26,7 @@ export default function DeleteFolderButton({ folderId }: { folderId: string }) {
         setIsOpen(false)
       } else {
         // Success! Redirect to home page
-        router.push('/ledger')
+        router.replace('/ledger')
       }
     })
   }

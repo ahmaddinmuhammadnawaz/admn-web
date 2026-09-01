@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import BackButton from '@/components/BackButton'
 import AddAccountForm from './AddAccountForm'
 
-export default async function AddaccountPage() {
+export default async function AddAccountPage() {
   const supabase = await createClient()
   
   // Fetch available folders to populate the dropdown
