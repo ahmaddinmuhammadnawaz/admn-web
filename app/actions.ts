@@ -27,33 +27,7 @@ export async function addaccount(formData: FormData) {
   revalidatePath('/ledger')
   return data.id // RETURN the ID instead of redirecting
 }
-export async function addLedgerEntry(accountId: string, formData: FormData) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
 
-  const type = formData.get('type') as string
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
-  const isDebit = type === 'Debit'
-
-  const { error } = await supabase.from('ledger_entries').insert({
-    account_id: accountId,
-    debit: isDebit ? amount : 0,
-    credit: isDebit ? 0 : amount,
-    page_no: (formData.get('page_no') as string) || null,
-    detail: (formData.get('detail') as string) || null,
-    reference: (formData.get('reference') as string) || null,
-    entry_date: (formData.get('entry_date') as string) || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' }),
-  })
-
-  if (error) {
-    console.error('Error adding entry:', error)
-    throw new Error('Failed to add entry')
-  }
-
-  // Revalidate the ledger path data cache
-  revalidatePath(`/account/${accountId}`)
-}
 export async function signOut() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -61,21 +35,7 @@ export async function signOut() {
   await supabase.auth.signOut()
   redirect('/login')
 }
-export async function deleteLedgerEntry(entryId: string, accountId: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
-  const { error } = await supabase
-    .from('ledger_entries')
-    .delete()
-    .eq('id', entryId)
-  if (error) {
-    console.error('Error deleting entry:', error)
-    throw new Error('Failed to delete entry')
-  }
-  // Refresh the ledger page to show the updated running balance
-  revalidatePath(`/account/${accountId}`)
-}
+
 export async function toggleAccountStatus(accountId: string, currentStatus: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -123,31 +83,7 @@ export async function changePassword(formData: FormData) {
   }
   return redirect('/settings?success=Password updated successfully')
 }
-export async function editLedgerEntry(entryId: string, accountId: string, formData: FormData) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
-  const type = formData.get('type') as string // 'Debit' or 'Credit'
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
-  const isDebit = type === 'Debit'
-  const { error } = await supabase
-    .from('ledger_entries')
-    .update({
-      debit: isDebit ? amount : 0,
-      credit: isDebit ? 0 : amount,
-      page_no: (formData.get('page_no') as string) || null,
-      detail: (formData.get('detail') as string) || null,
-      reference: (formData.get('reference') as string) || null,
-      entry_date: (formData.get('entry_date') as string) || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Karachi' }),
-    })
-    .eq('id', entryId)
-  if (error) {
-    console.error('Error updating entry:', error)
-    throw new Error('Failed to update entry')
-  }
-  // Refresh the ledger page and redirect back to it
-  revalidatePath(`/account/${accountId}`)
-}
+
 export async function deleteAccount(accountId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -318,39 +254,7 @@ export async function importData(formData: FormData) {
 
   redirect('/settings?success=Data+restored+successfully')
 }
-export async function deleteAllData() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
 
-  try {
-    // Delete in reverse order of dependency
-
-    // 1. Delete Entries (they depend on accounts and pages)
-    await supabase.from('daybook_entries').delete().not('id', 'is', null)
-    await supabase.from('daily_entries').delete().not('id', 'is', null)
-    await supabase.from('ledger_entries').delete().not('id', 'is', null)
-
-    // 2. Delete Pages
-    await supabase.from('daybook_pages').delete().not('id', 'is', null)
-    await supabase.from('daily_pages').delete().not('id', 'is', null)
-
-    // 3. Delete accounts (they depend on folders)
-    await supabase.from('accounts').delete().not('id', 'is', null)
-
-    // 4. Delete folders LAST
-    await supabase.from('folders').delete().not('id', 'is', null)
-
-    revalidatePath('/')
-    revalidatePath('/ledger')
-    revalidatePath('/daily')
-    revalidatePath('/daybook') // <-- Add this line
-    return { success: true }
-  } catch (error) {
-    console.error('Error resetting database:', error)
-    return { error: 'Failed to delete all data.' }
-  }
-}
 export async function setYearFilter(formData: FormData) {
   // getAll retrieves an array of all checked checkboxes with the name "year"
   const years = formData.getAll('year') as string[]
