@@ -428,15 +428,18 @@ export async function transferDailyToLedger(pageId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // 1. Fetch page
   const { data: page } = await supabase.from('daily_pages').select('*').eq('id', pageId).single()
   if (!page || page.is_transferred) throw new Error('Invalid or already transferred page')
 
-  // 2. Fetch entries
-  const { data: entries } = await supabase.from('daily_entries').select('*').eq('page_id', pageId)
+  // FIX: Add .order() to ensure correct sequence
+  const { data: entries } = await supabase
+    .from('daily_entries')
+    .select('*')
+    .eq('page_id', pageId)
+    .order('created_at', { ascending: true })
+    
   if (!entries || entries.length === 0) throw new Error('No entries to transfer')
 
-  // 3. Map to ledger formatting
   const ledgerPayload = entries.map(e => ({
     account_id: e.account_id,
     debit: e.debit,
@@ -444,14 +447,13 @@ export async function transferDailyToLedger(pageId: string) {
     page_no: page.page_no.toString(),
     detail: e.detail,
     reference: e.reference,
-    entry_date: page.work_date
+    entry_date: page.work_date,
+    created_at: e.created_at // FIX: Pass the original timestamp to break SQL ties
   }))
 
-  // 4. Batch Insert to ledger
   const { error: insertError } = await supabase.from('ledger_entries').insert(ledgerPayload)
   if (insertError) throw new Error('Failed to transfer to ledger')
 
-  // 5. Lock the daily page
   await supabase.from('daily_pages').update({ is_transferred: true }).eq('id', pageId)
 
   revalidatePath(`/daily/${pageId}`)
@@ -603,17 +605,24 @@ export async function transferDaybookToLedger(pageId: string) {
   const { data: page } = await supabase.from('daybook_pages').select('*').eq('id', pageId).single()
   if (!page || page.is_transferred) throw new Error('Invalid or already transferred page')
 
-  const { data: entries } = await supabase.from('daybook_entries').select('*').eq('page_id', pageId)
+  // FIX: Add .order() to ensure correct sequence
+  const { data: entries } = await supabase
+    .from('daybook_entries')
+    .select('*')
+    .eq('page_id', pageId)
+    .order('created_at', { ascending: true })
+
   if (!entries || entries.length === 0) throw new Error('No entries to transfer')
 
   const ledgerPayload = entries.map(e => ({
     account_id: e.account_id,
     debit: e.debit,
     credit: e.credit,
-    page_no: `DB-${page.page_no}`, // Added DB- prefix to distinguish from Entry Book pages in the ledger
+    page_no: `DB-${page.page_no}`,
     detail: e.detail,
     reference: e.reference,
-    entry_date: page.work_date
+    entry_date: page.work_date,
+    created_at: e.created_at // FIX: Pass the original timestamp to break SQL ties
   }))
 
   const { error: insertError } = await supabase.from('ledger_entries').insert(ledgerPayload)
