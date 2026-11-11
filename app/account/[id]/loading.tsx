@@ -56,15 +56,6 @@ export default function AccountLedgerLoading() {
       {/* Ledger Table area */}
       <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full">
         
-        {/* Inline Form Skeleton */}
-        <div className="bg-white p-5 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm flex flex-col lg:flex-row gap-4 items-start animate-pulse">
-          <div className="w-full lg:w-[14%] h-[66px] bg-gray-100 rounded-xl"></div>
-          <div className="w-full lg:w-[10%] h-[66px] bg-gray-100 rounded-xl"></div>
-          <div className="w-full lg:flex-1 h-[66px] bg-gray-100 rounded-xl"></div>
-          <div className="w-full lg:w-[10%] h-[66px] bg-gray-100 rounded-xl"></div>
-          <div className="w-full lg:w-[22%] h-[66px] bg-gray-100 rounded-xl"></div>
-          <div className="w-full lg:w-[140px] h-[42px] mt-[24px] bg-gray-200 rounded-xl hidden lg:block"></div>
-        </div>
 
         {/* Search/Filter Skeleton */}
         <div className="bg-white p-4 rounded-2xl border border-[#E5E7EB] mb-6 shadow-sm">
@@ -89,7 +80,6 @@ export default function AccountLedgerLoading() {
                   <th className="px-4 py-3"></th>
                   <th className="px-4 py-3"></th>
                   <th className="px-4 py-3"></th>
-                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E5E7EB]">
@@ -101,18 +91,7 @@ export default function AccountLedgerLoading() {
                     <td className="px-4 py-4"><div className="h-4 w-16 bg-gray-200 rounded"></div></td>
                     <td className="px-4 py-4"><div className="h-4 w-16 bg-gray-200 rounded ml-auto"></div></td>
                     <td className="px-4 py-4"><div className="h-4 w-16 bg-gray-200 rounded ml-auto"></div></td>
-                    <td className="px-4 py-4">
-                      <div className="flex flex-col items-end gap-1.5">
-                         <div className="h-3 w-10 bg-gray-200 rounded"></div>
-                         <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center justify-center gap-1">
-                        <div className="h-7 w-7 bg-gray-200 rounded-lg"></div>
-                        <div className="h-7 w-7 bg-gray-200 rounded-lg"></div>
-                      </div>
-                    </td>
+                    <td className="px-4 py-4"><div className="h-4 w-24 bg-gray-200 rounded ml-auto"></div></td>
                   </tr>
                 ))}
               </tbody>
