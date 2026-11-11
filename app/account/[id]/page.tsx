@@ -36,6 +36,27 @@ export default async function AccountLedger({
 
   if (accountError || !account) notFound()
 
+    // Count ALL entries for this account (not affected by year/date filters)
+const countFor = (table: string) =>
+  supabase
+    .from(table)
+    .select('id', { count: 'exact', head: true })
+    .eq('account_id', id)
+
+const [ledgerRes, dailyRes, daybookRes] = await Promise.all([
+  countFor('ledger_entries'),
+  countFor('daily_entries'),
+  countFor('daybook_entries'),
+])
+
+// If any count fails, treat it as "unknown" so we show the strongest warning
+const countsUnknown = Boolean(ledgerRes.error || dailyRes.error || daybookRes.error)
+const entryCounts = {
+  ledger: ledgerRes.count ?? 0,
+  daily: dailyRes.count ?? 0,
+  daybook: daybookRes.count ?? 0,
+}
+
   const hasDateRange = Boolean(from || to)
 
   // 2. Pagination & Search calculations
@@ -110,7 +131,7 @@ export default async function AccountLedger({
               </form>
               <div className="w-px h-4 bg-white/20" />
               <form action={deleteAction}>
-                <DeleteAccountButton />
+                <DeleteAccountButton counts={entryCounts} countsUnknown={countsUnknown} />
               </form>
             </div>
           </div>

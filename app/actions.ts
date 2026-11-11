@@ -88,7 +88,28 @@ export async function deleteAccount(accountId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
-  // First, delete all ledger entries associated with this account
+
+  // 1. Delete un-transferred daily entries associated with this account
+  const { error: dailyError } = await supabase
+    .from('daily_entries')
+    .delete()
+    .eq('account_id', accountId)
+  if (dailyError) {
+    console.error('Error deleting daily entries:', dailyError)
+    throw new Error('Failed to delete daily entries')
+  }
+
+  // 2. Delete un-transferred daybook entries associated with this account
+  const { error: daybookError } = await supabase
+    .from('daybook_entries')
+    .delete()
+    .eq('account_id', accountId)
+  if (daybookError) {
+    console.error('Error deleting daybook entries:', daybookError)
+    throw new Error('Failed to delete daybook entries')
+  }
+
+  // 3. Delete all ledger entries associated with this account
   const { error: entriesError } = await supabase
     .from('ledger_entries')
     .delete()
@@ -97,7 +118,8 @@ export async function deleteAccount(accountId: string) {
     console.error('Error deleting ledger entries:', entriesError)
     throw new Error('Failed to delete ledger entries')
   }
-  // Then, delete the account account
+
+  // 4. Finally, delete the account itself
   const { error: accountError } = await supabase
     .from('accounts')
     .delete()
@@ -106,6 +128,7 @@ export async function deleteAccount(accountId: string) {
     console.error('Error deleting account:', accountError)
     throw new Error('Failed to delete account')
   }
+
   // Refresh the main dashboard and redirect to it
   revalidatePath('/ledger')
   redirect('/ledger', 'replace')
@@ -139,54 +162,69 @@ export async function exportData() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Fetch smaller tables normally
-  const [
-    { data: folders },
-    { data: accounts },
-    { data: dailyPages },
-    { data: dailyEntries },
-    { data: daybookPages },
-    { data: daybookEntries },
-  ] = await Promise.all([
-    supabase.from('folders').select('*'),
-    supabase.from('accounts').select('*'),
-    supabase.from('daily_pages').select('*'),
-    supabase.from('daily_entries').select('*'),
-    supabase.from('daybook_pages').select('*'),
-    supabase.from('daybook_entries').select('*'),
-  ])
+  const PAGE = 1000
 
-  // Batch fetch massive tables to prevent Vercel out-of-memory (OOM) crashes
-  let entries: any[] = []
-  let hasMore = true
-  let offset = 0
-  const BATCH_SIZE = 10000
+  async function fetchAll(table: string) {
+    const rows: any[] = []
+    let from = 0
 
-  while (hasMore) {
-    const { data } = await supabase
-      .from('ledger_entries')
-      .select('*')
-      .range(offset, offset + BATCH_SIZE - 1)
+    while (true) {
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .order('id', { ascending: true })
+        .range(from, from + PAGE - 1)
 
-    if (data && data.length > 0) {
-      entries.push(...data)
-      offset += BATCH_SIZE
-    } else {
-      hasMore = false
+      if (error) throw new Error(`Export failed on ${table}: ${error.message}`)
+      if (!data || data.length === 0) break
+
+      rows.push(...data)
+      from += data.length
     }
+
+    // Safety check: make sure we got every row
+    const { count, error: countError } = await supabase
+      .from(table)
+      .select('id', { count: 'exact', head: true })
+
+    if (countError) throw new Error(`Count failed on ${table}: ${countError.message}`)
+    if (count !== rows.length) {
+      throw new Error(`Export mismatch on ${table}: expected ${count}, got ${rows.length}`)
+    }
+
+    return rows
   }
 
-  // Return a tightly packed JSON string including the new tables (Bumped version to 4)
+  const [folders, accounts, entries, dailyPages, dailyEntries, daybookPages, daybookEntries] =
+    await Promise.all([
+      fetchAll('folders'),
+      fetchAll('accounts'),
+      fetchAll('ledger_entries'),
+      fetchAll('daily_pages'),
+      fetchAll('daily_entries'),
+      fetchAll('daybook_pages'),
+      fetchAll('daybook_entries'),
+    ])
+
   return JSON.stringify({
     version: 4,
     timestamp: new Date().toISOString(),
+    counts: {
+      folders: folders.length,
+      accounts: accounts.length,
+      ledger_entries: entries.length,
+      daily_pages: dailyPages.length,
+      daily_entries: dailyEntries.length,
+      daybook_pages: daybookPages.length,
+      daybook_entries: daybookEntries.length,
+    },
     folders,
     accounts,
     entries,
     dailyPages,
     dailyEntries,
     daybookPages,
-    daybookEntries
+    daybookEntries,
   })
 }
 export async function importData(formData: FormData) {
@@ -399,7 +437,7 @@ export async function addDailyEntry(pageId: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   const type = formData.get('type') as string
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const amount = parseFloat(formData.get('amount') as string) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('daily_entries').insert({
@@ -466,7 +504,7 @@ export async function updateDailyEntry(entryId: string, pageId: string, formData
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   const type = formData.get('type') as string
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const amount = parseFloat(formData.get('amount') as string) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('daily_entries').update({
@@ -533,7 +571,7 @@ export async function addDaybookEntry(pageId: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   const type = formData.get('type') as string
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const amount = parseFloat(formData.get('amount') as string) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('daybook_entries').insert({
@@ -553,7 +591,7 @@ export async function updateDaybookEntry(entryId: string, pageId: string, formDa
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   const type = formData.get('type') as string
-  const amount = parseInt(formData.get('amount') as string, 10) || 0
+  const amount = parseFloat(formData.get('amount') as string) || 0
   const isDebit = type === 'Debit'
 
   const { error } = await supabase.from('daybook_entries').update({

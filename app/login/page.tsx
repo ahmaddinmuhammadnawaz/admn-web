@@ -45,7 +45,6 @@ export default async function Login({
             />
           </div>
           <h1 className="text-2xl font-bold text-[#131924] tracking-wider">ADMN</h1>
-          <p className="text-sm text-[#6B7280] mt-1">Commission Shop Ledger</p>
         </div>
 
         <form action={signIn} className="flex flex-col gap-4">
