@@ -32,13 +32,12 @@ export default function LedgerClient({
       const query = searchQuery.toLowerCase()
       const detailMatch = (entry.detail || '').toLowerCase().includes(query)
       const refMatch = (entry.reference || '').toLowerCase().includes(query)
-      const pageMatch = (entry.page_no || '').toLowerCase().includes(query)
 
       const [year, month, day] = entry.entry_date.split('-')
       const dateStr = `${parseInt(day)}/${parseInt(month)}/${year.slice(-2)}`
       const dateMatch = dateStr.includes(query)
 
-      return detailMatch || refMatch || pageMatch || dateMatch
+      return detailMatch || refMatch || dateMatch
     })
   }, [initialEntries, filterType, searchQuery])
 
@@ -118,7 +117,6 @@ export default function LedgerClient({
                <thead>
                  <tr className="bg-[#F7F8FA] border-b border-[#E5E7EB] text-[#6B7280] text-[11px] uppercase tracking-wider divide-x divide-[#E5E7EB]">
                     <th className="px-4 py-3 font-semibold whitespace-nowrap">Date</th>
-                    <th className="px-4 py-3 font-semibold">Pg</th>
                     <th className="px-4 py-3 font-semibold">Detail</th>
                     <th className="px-4 py-3 font-semibold">Ref</th>
                     <th className="px-4 py-3 font-semibold text-right">Debit</th>
@@ -143,7 +141,6 @@ export default function LedgerClient({
                               return `${parseInt(d)}/${parseInt(m)}/${y.slice(-2)}`
                             })()}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-500">{entry.page_no || ''}</td>
                           <td className="px-4 py-3 text-sm text-gray-900 min-w-[200px] break-words whitespace-pre-wrap" title={entry.detail}>{entry.detail || ''}</td>
                           <td className="px-4 py-3 text-sm text-gray-500 min-w-[120px] break-words whitespace-pre-wrap" title={entry.reference}>{entry.reference || ''}</td>
                           <td className="px-4 py-3 text-sm text-right font-semibold text-[#DC2626] tnum whitespace-nowrap">{formattedDebit}</td>

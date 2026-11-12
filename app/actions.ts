@@ -227,6 +227,37 @@ export async function exportData() {
     daybookEntries,
   })
 }
+
+export async function deleteAllData() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return { error: 'Unauthorized' }
+  }
+
+  try {
+    // 1. Delete child entries first to avoid foreign-key constraint blocks
+    await supabase.from('ledger_entries').delete().not('id', 'is', null)
+    await supabase.from('daily_entries').delete().not('id', 'is', null)
+    await supabase.from('daybook_entries').delete().not('id', 'is', null)
+    
+    // 2. Delete parent structures next
+    await supabase.from('daily_pages').delete().not('id', 'is', null)
+    await supabase.from('daybook_pages').delete().not('id', 'is', null)
+    await supabase.from('accounts').delete().not('id', 'is', null)
+    await supabase.from('folders').delete().not('id', 'is', null)
+
+    // Revalidate paths to clear the UI caches
+    revalidatePath('/', 'layout')
+    
+    return { success: true }
+  } catch (error) {
+    console.error("Delete all error:", error)
+    return { error: 'Failed to delete all data. Please try again.' }
+  }
+}
+
 export async function importData(formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -234,10 +265,25 @@ export async function importData(formData: FormData) {
 
   try {
     const file = formData.get('backupFile') as File
+    const importMode = formData.get('importMode') as string // NEW: retrieve mode
     if (!file) throw new Error('No file uploaded')
 
     const fileContent = await file.text()
     const parsedData = JSON.parse(fileContent)
+
+    // NEW: Wipe existing data if "replace" mode is selected
+    if (importMode === 'replace') {
+      // Must delete child entries first to avoid foreign-key constraint blocks
+      await supabase.from('ledger_entries').delete().not('id', 'is', null)
+      await supabase.from('daily_entries').delete().not('id', 'is', null)
+      await supabase.from('daybook_entries').delete().not('id', 'is', null)
+      
+      // Delete parent structures next
+      await supabase.from('daily_pages').delete().not('id', 'is', null)
+      await supabase.from('daybook_pages').delete().not('id', 'is', null)
+      await supabase.from('accounts').delete().not('id', 'is', null)
+      await supabase.from('folders').delete().not('id', 'is', null)
+    }
 
     // 1. Restore Folders
     if (parsedData.folders && parsedData.folders.length > 0) {
@@ -261,13 +307,13 @@ export async function importData(formData: FormData) {
       if (entryError) throw entryError
     }
 
-    // 4. Restore Entry Book Pages (New feature support)
+    // 4. Restore Entry Book Pages
     if (parsedData.dailyPages && parsedData.dailyPages.length > 0) {
       const { error: pageError } = await supabase.from('daily_pages').upsert(parsedData.dailyPages)
       if (pageError) throw pageError
     }
 
-    // 5. Restore Entry Book Entries (New feature support)
+    // 5. Restore Entry Book Entries 
     if (parsedData.dailyEntries && parsedData.dailyEntries.length > 0) {
       const { error: dailyEntryError } = await supabase.from('daily_entries').upsert(parsedData.dailyEntries)
       if (dailyEntryError) throw dailyEntryError
@@ -469,7 +515,6 @@ export async function transferDailyToLedger(pageId: string) {
   const { data: page } = await supabase.from('daily_pages').select('*').eq('id', pageId).single()
   if (!page || page.is_transferred) throw new Error('Invalid or already transferred page')
 
-  // FIX: Add .order() to ensure correct sequence
   const { data: entries } = await supabase
     .from('daily_entries')
     .select('*')
@@ -486,7 +531,7 @@ export async function transferDailyToLedger(pageId: string) {
     detail: e.detail,
     reference: e.reference,
     entry_date: page.work_date,
-    created_at: e.created_at // FIX: Pass the original timestamp to break SQL ties
+    created_at: e.created_at
   }))
 
   const { error: insertError } = await supabase.from('ledger_entries').insert(ledgerPayload)
@@ -494,9 +539,8 @@ export async function transferDailyToLedger(pageId: string) {
 
   await supabase.from('daily_pages').update({ is_transferred: true }).eq('id', pageId)
 
-  revalidatePath(`/daily/${pageId}`)
-  revalidatePath('/daily')
-  revalidatePath('/ledger')
+  // This single line forces Next.js to refresh all data across the whole app
+  revalidatePath('/', 'layout')
 }
 
 export async function updateDailyEntry(entryId: string, pageId: string, formData: FormData) {
@@ -643,7 +687,6 @@ export async function transferDaybookToLedger(pageId: string) {
   const { data: page } = await supabase.from('daybook_pages').select('*').eq('id', pageId).single()
   if (!page || page.is_transferred) throw new Error('Invalid or already transferred page')
 
-  // FIX: Add .order() to ensure correct sequence
   const { data: entries } = await supabase
     .from('daybook_entries')
     .select('*')
@@ -660,7 +703,7 @@ export async function transferDaybookToLedger(pageId: string) {
     detail: e.detail,
     reference: e.reference,
     entry_date: page.work_date,
-    created_at: e.created_at // FIX: Pass the original timestamp to break SQL ties
+    created_at: e.created_at
   }))
 
   const { error: insertError } = await supabase.from('ledger_entries').insert(ledgerPayload)
@@ -668,7 +711,6 @@ export async function transferDaybookToLedger(pageId: string) {
 
   await supabase.from('daybook_pages').update({ is_transferred: true }).eq('id', pageId)
 
-  revalidatePath(`/daybook/${pageId}`)
-  revalidatePath('/daybook')
-  revalidatePath('/ledger')
+  // This single line forces Next.js to refresh all data across the whole app
+  revalidatePath('/', 'layout')
 }

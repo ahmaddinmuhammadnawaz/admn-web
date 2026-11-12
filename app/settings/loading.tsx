@@ -13,6 +13,19 @@ export default function SettingsLoading() {
       {/* Content Container Skeleton */}
       {/* Match the -mt-12 sm:-mt-16 here */}
       <div className="flex-1 p-4 md:p-6 lg:p-8 max-w-2xl mx-auto w-full -mt-12 sm:-mt-16 pb-20">
+
+                {/* Financial Years Card Skeleton */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] shadow-sm p-5 sm:p-8 mb-6 animate-pulse">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+            <div className="h-6 w-40 bg-gray-200 rounded"></div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+            <div className="h-12 w-full bg-gray-100 rounded-xl"></div>
+            <div className="h-12 w-full sm:w-40 bg-gray-300 rounded-xl mt-2"></div>
+          </div>
+        </div>
         
         {/* 1. Change Password Card Skeleton */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] shadow-sm p-5 sm:p-8 animate-pulse">
@@ -53,16 +66,6 @@ export default function SettingsLoading() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* 3. Danger Zone Card Skeleton */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-red-100 shadow-sm p-5 sm:p-8 mt-6 animate-pulse">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-red-100 rounded-lg"></div>
-            <div className="h-6 w-32 bg-gray-200 rounded"></div>
-          </div>
-          <div className="h-10 w-full bg-gray-100 rounded mb-6"></div>
-          <div className="h-14 w-full sm:w-64 bg-red-200 rounded-xl"></div>
         </div>
 
       </div>

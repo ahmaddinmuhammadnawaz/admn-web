@@ -18,20 +18,10 @@ export default async function DaybookDashboard({ searchParams }: { searchParams:
     .order('work_date', { ascending: false })
     .limit(100)
 
-  const filteredPages = pages?.filter(p => {
+const filteredPages = pages?.filter(p => {
     if (!q) return true;
 
     const query = q.toLowerCase().trim()
-
-    // Check if the query consists ONLY of numbers
-    const isPureNumber = /^\d+$/.test(query)
-
-    // If it's just a number, ONLY match the exact page number
-    if (isPureNumber) {
-      return p.page_no.toString() === query
-    }
-
-    // Otherwise (if it has dashes or slashes), search the dates
     const [year, month, day] = p.work_date.split('-')
     const formatDash = `${day}-${month}-${year}`
     const formatSlash = `${day}/${month}/${year}`
@@ -114,7 +104,6 @@ export default async function DaybookDashboard({ searchParams }: { searchParams:
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h2 className="font-bold text-lg text-gray-800 tnum">{new Date(page.work_date + 'T00:00:00').toLocaleDateString('en-GB')}</h2>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5">Page No: {page.page_no}</p>
                   </div>
                   <div className="shrink-0">
                     {page.is_transferred ? (

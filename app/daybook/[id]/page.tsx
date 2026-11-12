@@ -34,9 +34,6 @@ export default async function DaybookPageDetails({ params }: { params: Promise<{
                 {new Date(page.work_date + 'T00:00:00').toLocaleDateString('en-GB')}
               </h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <p className="text-sm text-white/60 font-medium flex items-center gap-1.5">
-                  <FileText size={14} strokeWidth={2} /> Page No. {page.page_no}
-                </p>
                 {page.is_transferred ? (
                   <span className="inline-block px-2 py-0.5 rounded-md text-[11px] font-bold bg-green-500/20 text-green-300 border border-green-500/30">Transferred</span>
                 ) : (

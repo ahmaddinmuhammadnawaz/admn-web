@@ -37,7 +37,7 @@ export default function DailySearch({ initialQuery }: { initialQuery?: string })
         type="text"
         defaultValue={initialQuery} 
         onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Search by Date (DD-MM-YYYY) or Page No..." 
+        placeholder="Search by Date (DD-MM-YYYY)..." 
         className="w-full bg-[#F7F8FA] pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#131924] text-sm border border-transparent" 
       />
     </div>

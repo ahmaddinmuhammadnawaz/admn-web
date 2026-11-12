@@ -79,14 +79,12 @@ export default function AccountLedgerLoading() {
                   <th className="px-4 py-3"></th>
                   <th className="px-4 py-3"></th>
                   <th className="px-4 py-3"></th>
-                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E5E7EB]">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <tr key={i} className="divide-x divide-[#E5E7EB] animate-pulse">
                     <td className="px-4 py-4"><div className="h-4 w-12 bg-gray-200 rounded"></div></td>
-                    <td className="px-4 py-4"><div className="h-4 w-6 bg-gray-200 rounded"></div></td>
                     <td className="px-4 py-4"><div className="h-4 w-40 bg-gray-200 rounded"></div></td>
                     <td className="px-4 py-4"><div className="h-4 w-16 bg-gray-200 rounded"></div></td>
                     <td className="px-4 py-4"><div className="h-4 w-16 bg-gray-200 rounded ml-auto"></div></td>

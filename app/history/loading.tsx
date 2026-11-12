@@ -23,8 +23,7 @@ export default function HistoryLoading() {
 
       {/* Filter + Print Toolbar Skeleton */}
       <div className="bg-white border-b border-[#E5E7EB]">
-        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-2.5 flex items-center gap-2">
-          <div className="h-9 w-32 bg-gray-200 rounded-full animate-pulse"></div>
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-2.5 flex items-center justify-end gap-2">
           <div className="h-9 w-24 bg-gray-200 rounded-full animate-pulse"></div>
         </div>
       </div>

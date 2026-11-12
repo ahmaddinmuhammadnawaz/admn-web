@@ -54,6 +54,12 @@ export default function AddAccountLoading() {
             </div>
           </div>
 
+          {/* Folder */}
+          <div>
+            <div className="h-4 w-14 bg-gray-200 rounded mb-2"></div>
+            <div className="h-[50px] w-full bg-gray-100 rounded-xl border border-[#E5E7EB]"></div>
+          </div>
+
           {/* Notes */}
           <div>
             <div className="h-4 w-48 bg-gray-200 rounded mb-2"></div>
